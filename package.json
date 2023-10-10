@@ -1,5 +1,12 @@
 {
-    "name" : "wine-price-quality",
-    "version" : "0.0.1",
-    "type" : "module"
+    "name": "wine-price-quality",
+    "version": "0.0.1",
+    "type": "module",
+    "dependencies": {
+        "express": "^4.18.2",
+        "puppeteer": "^21.3.8"
+    },
+    "devDependencies": {
+        "nodemon": "^3.0.1"
+    }
 }
