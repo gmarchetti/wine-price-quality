@@ -19,18 +19,20 @@ WORKDIR /home/pptruser
 
 COPY puppeteer-browsers-latest.tgz ./
 
-RUN npm install puppeteer
+# Copy the app package and package-lock.json file
+COPY --chown=pptruser package*.json ./
+RUN npm install
 
-# Install @puppeteer/browsers, puppeteer and puppeteer-core into /home/pptruser/node_modules.
+# Install @puppeteer/browsers
 RUN npm i ./puppeteer-browsers-latest.tgz \
     && rm ./puppeteer-browsers-latest.tgz \
     && (node -e "require('child_process').execSync(require('puppeteer').executablePath() + ' --credits', {stdio: 'inherit'})" > THIRD_PARTY_NOTICES)
 
-# Copy the app package and package-lock.json file
-COPY dummy/package*.json ./
-
 # Copy local directories to the current local directory of our docker image (/app)
-COPY ./dummy ./
+COPY models ./models
+COPY routes ./routes
+COPY index.js ./
 
+EXPOSE 3000
 # Start the app using serve command
-CMD [ "node", "dummy.js"]
+CMD [ "node", "index.js"]
