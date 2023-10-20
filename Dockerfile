@@ -34,5 +34,5 @@ COPY routes ./routes
 COPY index.js ./
 
 EXPOSE 3000
-# Start the app using serve command
+
 CMD [ "node", "index.js"]
