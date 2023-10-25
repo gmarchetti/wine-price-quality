@@ -1,4 +1,5 @@
 import puppeteer from 'puppeteer';
+import path from 'path'
 
 export default class VivinoQualityFetcher
 {
@@ -14,7 +15,11 @@ export default class VivinoQualityFetcher
         this.page = await this.browser.newPage();
 
         // Navigate the page to a URL
-        await this.page.goto('https://www.vivino.com/search/wines?q=' + this.wineName);
+        // await this.page.goto('https://www.vivino.com/search/wines?q=' + this.wineName);
+
+        let sampleHtmlPath = path.resolve("tests/sample-data/vivino-sample.html")
+        await this.page.goto("file://" + sampleHtmlPath);
+        console.log(sampleHtmlPath)
 
         // Set screen size
         await this.page.setViewport({width: 1080, height: 1024});
@@ -35,10 +40,12 @@ export default class VivinoQualityFetcher
             throw new Error("No wine page loaded")
         }
 
-        let quality = await this.page.$eval(".search-results-list > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2)", (element) => {
-            return element.getText()
+        let qualityAsText = await this.page.$eval(".search-results-list > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2)", (element) => {
+            return element.innerText
         })
 
-        return quality
+        let qualityAsNumber = parseFloat(qualityAsText.replace(/,/g, '.'))
+
+        return qualityAsNumber
     }
 }
