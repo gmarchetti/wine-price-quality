@@ -30,7 +30,7 @@ export default class Wine
         await this.qualityFetcher.searchForTheWine()
 
         console.log("Parsing Wine Rating")
-        let quality = await this.qualityFetcher.getWineQuality()
+        let quality = await this.qualityFetcher.getWineQualityFromPage()
 
         return quality
     }
