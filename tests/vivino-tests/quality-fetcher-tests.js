@@ -6,7 +6,7 @@ import VivinoQualityFetcher from "../../models/vivino-item-fetcher/vivino-qualit
 describe('VivinoQualityFetcher', function () {
 
   describe('getWineQuality()', function() {
-    let qualityFetcher = new VivinoQualityFetcher("sampe-name")
+    let qualityFetcher = new VivinoQualityFetcher("sample-name")
     let winePage
     let browser
 
