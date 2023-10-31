@@ -1,23 +1,21 @@
-import SingleItemParser from "./parsers/ct-single-item-parser.js"
-import SingleItemFetcher from "./ct-page-fetcher/single-wine-page-fetcher.js"
+import CTPageParser from "./parsers/ct-page-parser.js"
 import VivinoQualityFetcher from "./vivino-item-fetcher/vivino-quality-fetcher.js"
-import { ConsoleMessage } from "puppeteer"
+import CTWineFetcher from "./ct-page-fetcher/ct-wine-page-fetcher.js"
 
 export default class Wine
 {
     constructor(wineName)
     {
-        this.wineFetcher = new SingleItemFetcher(wineName)
+        this.wineFetcher = new CTWineFetcher(wineName)
         this.qualityFetcher = new VivinoQualityFetcher(wineName)        
     }
 
     async getWinePrice()
     {   
-        let page = await this.wineFetcher.getWinePage()
-        console.log(page)
+        let page = await this.wineFetcher.searchWine()
         
-        this.wineParser = new SingleItemParser(page)
-        let price = await this.wineParser.getPrice()
+        this.wineParser = new CTPageParser(page)
+        let price = await this.wineParser.getPriceFromSearchPage(page)
         
         await this.wineFetcher.closeWinePage()
         
