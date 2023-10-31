@@ -1,4 +1,4 @@
-import puppeteer from 'puppeteer';
+import SearchBrowser from "../puppeteer/search-browser.js";
 
 export default class SingleWineFetcher
 {
@@ -10,20 +10,25 @@ export default class SingleWineFetcher
     async getWinePage()
     {
         // Launch the browser and open a new blank page
-        this.browser = await puppeteer.launch();
-        this.page = await this.browser.newPage();
+        // this.browser = await puppeteer.launch();
+        // this.page = await this.browser.newPage();
 
-        // Navigate the page to a URL
+        // // Navigate the page to a URL
+        // await this.page.goto('https://www.continente.pt/produto/mula-velha-reserva-regional-lisboa-vinho-tinto-mula-velha-5400380.html');
+
+        // // Set screen size
+        // await this.page.setViewport({width: 1080, height: 1024});
+
+        // return this.page
+        this.browser = new SearchBrowser()
+        this.page = await this.browser.getSearchPage()
+        
         await this.page.goto('https://www.continente.pt/produto/mula-velha-reserva-regional-lisboa-vinho-tinto-mula-velha-5400380.html');
-
-        // Set screen size
-        await this.page.setViewport({width: 1080, height: 1024});
-
         return this.page
     }
 
     async closeWinePage()
     {
-        this.browser.close()
+        this.browser.closeSearchPage()
     }
 }

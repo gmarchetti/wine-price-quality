@@ -1,4 +1,5 @@
 import puppeteer from 'puppeteer';
+import SearchBrowser from '../puppeteer/search-browser.js';
 
 export default class VivinoQualityFetcher
 {
@@ -9,23 +10,8 @@ export default class VivinoQualityFetcher
 
     async searchForTheWine()
     {
-        // Launch the browser and open a new blank page
-        this.browser = await puppeteer.launch({
-            headless: "new",
-            defaultViewport: { width: 1920, height: 1040 },
-            devtools: false,
-            args: ['--start-maximized'],
-        });
-
-        this.page = await this.browser.newPage();
-
-
-        // need to set User Agent else an empty result
-        // it seems they detect headless Chrome
-        // from: https://github.com/aptash/vivino-api/blob/main/vivino.js
-        await this.page.setUserAgent(
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36',
-        );
+        this.browser = new SearchBrowser()
+        this.page = await this.browser.getSearchPage()
 
         // Navigate the page to a URL
         await this.page.goto('https://www.vivino.com/search/wines?q=' + this.wineName);
@@ -37,8 +23,7 @@ export default class VivinoQualityFetcher
 
     async closeWinePage()
     {
-        this.browser.close()
-        this.page = null
+        this.browser.closeSearchPage()
     }
 
     async getWineQualityFromPage(externalPage)
