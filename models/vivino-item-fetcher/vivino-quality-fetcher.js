@@ -11,7 +11,7 @@ export default class VivinoQualityFetcher
     {
         // Launch the browser and open a new blank page
         this.browser = await puppeteer.launch({
-            headless: true,
+            headless: "new",
             defaultViewport: { width: 1920, height: 1040 },
             devtools: false,
             args: ['--start-maximized'],
