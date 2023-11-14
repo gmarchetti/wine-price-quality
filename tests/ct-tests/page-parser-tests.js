@@ -29,4 +29,29 @@ describe('CTPageParser', function () {
         browser.closeSearchPage()
     });
   });
+
+  describe('parseFullWineListing()', function() {
+    let priceParser = new CTPageParser()
+    let winePage
+    let browser
+
+    beforeEach(async function(){
+        browser = new SearchBrowser()
+        winePage = await browser.getSearchPage()
+        await winePage.goto("file://" + path.resolve("./tests/sample-data/red-wine-first-page.html"))
+    });
+
+    it('Wine Listing page should not be null', function() {
+        assert.notEqual(winePage, null)
+    });
+
+    it('Dict size should be 24', async function () {        
+        let priceList = await priceParser.getPricesFromListingPage(winePage)
+        assert.equal(Object.keys(priceList).length, 24)
+    });
+
+    afterEach(async function(){
+        browser.closeSearchPage()
+    });
+  });
 });

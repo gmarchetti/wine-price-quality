@@ -1,4 +1,6 @@
-import puppeteer from "puppeteer"
+import puppeteer, { ConsoleMessage } from "puppeteer"
+
+const CT_ITEM_TYPE = "http://schema.org/SomeProducts"
 
 export default class SingleItemParser 
 {
@@ -7,12 +9,23 @@ export default class SingleItemParser
         this.page = page
     }
 
-    async getPrice()
+    async getPrice(rawWineInfo)
     {
-        let price = await this.page.$eval(".prices-wrapper > .sales > .value", (element) => {
+        let priceAsString = await rawWineInfo.$eval(".prices-wrapper > .sales > .value", (element) => {
             return element.getAttribute("content")
         })
-        return price
+        return parseFloat(priceAsString)
+    }
+
+    async getWineInfo(rawWineInfo)
+    {
+        let wineInfo = {}
+
+        let winePrice = await this.getPrice(rawWineInfo)
+
+        return wineInfo = {
+            ["price"] : winePrice
+        }
     }
 
     async getPriceFromSearchPage(page)
@@ -21,5 +34,20 @@ export default class SingleItemParser
             return element.getAttribute("content")
         })
         return parseFloat(priceAsString)
+    }
+
+    async getPricesFromListingPage(page)
+    {
+        let wineList = []
+        let rawWineList = await page.$$(`[itemType="${CT_ITEM_TYPE}"] > [data-idx]`)
+        
+        for (let i = 0; i < rawWineList.length; i++)
+        {
+            let element = await this.getWineInfo(rawWineList[i])
+            wineList.push(element)
+        }
+        
+        console.log(wineList)
+        return wineList
     }
 }
