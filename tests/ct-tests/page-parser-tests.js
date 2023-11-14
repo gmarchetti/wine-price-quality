@@ -65,6 +65,21 @@ describe('CTPageParser', function () {
       assert.equal(priceList[priceList.length - 1].price, 4.99)
     });
 
+    it('Full name attribute should not be empty', async function () {        
+      let priceList = await priceParser.getPricesFromListingPage(winePage)
+      assert.notEqual(priceList[0].fullName, null)
+    });
+
+    it('First full name should be Mula Velha Reserva Regional Lisboa Vinho Tinto', async function () {        
+      let priceList = await priceParser.getPricesFromListingPage(winePage)
+      assert.equal(priceList[0].fullName, "Mula Velha Reserva Regional Lisboa Vinho Tinto")
+    });
+
+    it('Last full name should be 4.99', async function () {        
+      let priceList = await priceParser.getPricesFromListingPage(winePage)
+      assert.equal(priceList[priceList.length - 1].fullName, "Tapada das Lebres Signature Regional Alentejano Vinho Tinto")
+    });
+
     afterEach(async function(){
         browser.closeSearchPage()
     });

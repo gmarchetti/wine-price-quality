@@ -23,8 +23,12 @@ export default class SingleItemParser
 
         let winePrice = await this.getPrice(rawWineInfo)
 
+        let wineNameElement = await rawWineInfo.$(".pwc-tile--description")
+        let wineName = await (await wineNameElement.getProperty("innerText")).jsonValue()
+
         return wineInfo = {
-            ["price"] : winePrice
+            ["price"] : winePrice,
+            ["fullName"] : wineName
         }
     }
 
