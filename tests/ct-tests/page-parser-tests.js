@@ -49,6 +49,21 @@ describe('CTPageParser', function () {
         let priceList = await priceParser.getPricesFromListingPage(winePage)
         assert.equal(Object.keys(priceList).length, 24)
     });
+    
+    it('Price attribute should not be empty', async function () {        
+      let priceList = await priceParser.getPricesFromListingPage(winePage)
+      assert.notEqual(priceList[0].price, null)
+    });    
+
+    it('First price should be 3.29', async function () {        
+      let priceList = await priceParser.getPricesFromListingPage(winePage)
+      assert.equal(priceList[0].price, 3.29)
+    });
+
+    it('Last price should be 4.99', async function () {        
+      let priceList = await priceParser.getPricesFromListingPage(winePage)
+      assert.equal(priceList[priceList.length - 1].price, 4.99)
+    });
 
     afterEach(async function(){
         browser.closeSearchPage()
