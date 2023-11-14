@@ -1,7 +1,7 @@
 import assert, { doesNotMatch } from 'assert';
-import puppeteer from 'puppeteer';
 import path from 'path'
 import VivinoQualityFetcher from "../../models/vivino-item-fetcher/vivino-quality-fetcher.js"
+import SearchBrowser from '../../models/puppeteer/search-browser.js';
 
 describe('VivinoQualityFetcher', function () {
 
@@ -11,8 +11,8 @@ describe('VivinoQualityFetcher', function () {
     let browser
 
     beforeEach(async function(){
-        browser = await puppeteer.launch()
-        winePage = await browser.newPage()
+        browser = new SearchBrowser()
+        winePage = await browser.getSearchPage()
         await winePage.goto("file://" + path.resolve("./tests/sample-data/vivino-sample.html"))
     });
 
@@ -26,7 +26,7 @@ describe('VivinoQualityFetcher', function () {
     });
 
     afterEach(async function(){
-        browser.close()
+        browser.closeSearchPage()
         winePage = null
     });
   });
