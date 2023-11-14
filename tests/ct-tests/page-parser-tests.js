@@ -80,6 +80,21 @@ describe('CTPageParser', function () {
       assert.equal(priceList[priceList.length - 1].fullName, "Tapada das Lebres Signature Regional Alentejano Vinho Tinto")
     });
 
+    it('Continente Id should not be empty', async function () {        
+      let priceList = await priceParser.getPricesFromListingPage(winePage)
+      assert.notEqual(priceList[0].ctId, null)
+    });
+
+    it('First Continente Id should be 5400380', async function () {        
+      let priceList = await priceParser.getPricesFromListingPage(winePage)
+      assert.equal(priceList[0].ctId, "5400380")
+    });
+
+    it('14th Continente Id should be 6037014', async function () {        
+      let priceList = await priceParser.getPricesFromListingPage(winePage)
+      assert.equal(priceList[13].ctId, "6037014")
+    });
+
     afterEach(async function(){
         browser.closeSearchPage()
     });

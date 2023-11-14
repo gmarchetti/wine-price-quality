@@ -26,9 +26,14 @@ export default class SingleItemParser
         let wineNameElement = await rawWineInfo.$(".pwc-tile--description")
         let wineName = await (await wineNameElement.getProperty("innerText")).jsonValue()
 
+        let wineCtId = await rawWineInfo.$eval(".product", (element) => {
+            return element.getAttribute("data-pid")
+        })
+        
         return wineInfo = {
             ["price"] : winePrice,
-            ["fullName"] : wineName
+            ["fullName"] : wineName,
+            ["ctId"] : `${wineCtId}`
         }
     }
 
