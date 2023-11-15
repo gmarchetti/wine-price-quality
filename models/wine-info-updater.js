@@ -21,6 +21,31 @@ export default class WineUpdater
         return prices
     }
 
+    async addQualityToPriceListing(pricesListing){
+        
+        let fullWineListing = []
+        let wineName
+
+        pricesListing.forEach(listing => {
+            let completedListing = {}
+            
+            if(listing != null)
+            {
+                wineName = listing.fullName
+                console.log(wineName)
+
+                completedListing["price"] = listing.price
+                completedListing["fullName"] = listing.fullName
+                completedListing["ctId"] = listing.ctId
+                completedListing["quality"] = 3.5
+
+                fullWineListing.push(completedListing)
+            }            
+        });
+
+        return fullWineListing
+    }
+
     async getWineQuality(wineName)
     {
         console.log("Searching wine in Vivino")

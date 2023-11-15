@@ -29,9 +29,13 @@ router.get("/", (req, res) => {
 
     let priceListing = wineUpdater.getWinePriceListing()
 
-    priceListing.then( prices => {
-        res.json(prices)
-    })
+    priceListing
+        .then( prices => {
+            return wineUpdater.addQualityToPriceListing(prices)
+        }) 
+        .then( pricesWithQuality => {
+            res.json(pricesWithQuality)
+        })
 })
 
 export default router
