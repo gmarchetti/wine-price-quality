@@ -26,7 +26,9 @@ export default class WineUpdater
         let fullWineListing = []
         let wineName
 
-        pricesListing.forEach(listing => {
+        // pricesListing.forEach(listing => {
+        for (const listing of pricesListing)
+        {
             let completedListing = {}
             
             if(listing != null)
@@ -37,11 +39,15 @@ export default class WineUpdater
                 completedListing["price"] = listing.price
                 completedListing["fullName"] = listing.fullName
                 completedListing["ctId"] = listing.ctId
-                completedListing["quality"] = 3.5
+                completedListing["quality"] = await this.getWineQuality(wineName)
+                    .catch(error => {
+                        console.error(error)
+                        completedListing["quality"] = null
+                    })
 
                 fullWineListing.push(completedListing)
             }            
-        });
+        };
 
         return fullWineListing
     }
