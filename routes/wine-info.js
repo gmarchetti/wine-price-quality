@@ -1,8 +1,8 @@
 import express from "express"
 import Wine from "../models/wine.js"
+import WineInfoUpdater from "../models/wine-info-updater.js"
 
 const router = express.Router()
-
 
 router.get("/:wineName", (req, res) => {
     // let wineName = req.params.wineName
@@ -20,6 +20,17 @@ router.get("/:wineName", (req, res) => {
             ["quality"] : values[1]
         }
         res.json(response)
+    })
+})
+
+router.get("/", (req, res) => {
+    // let wineName = req.params.wineName
+    let wineUpdater = new WineInfoUpdater()
+
+    let priceListing = wineUpdater.getWinePriceListing()
+
+    priceListing.then( prices => {
+        res.json(prices)
     })
 })
 

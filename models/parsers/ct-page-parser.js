@@ -17,21 +17,28 @@ export default class SingleItemParser
 
     async getWineInfo(rawWineInfo)
     {
-        let wineInfo = {}
+        let wineInfo = null
 
         let winePrice = await this.getPrice(rawWineInfo)
 
-        let wineNameElement = await rawWineInfo.$(".pwc-tile--description")
-        let wineName = await (await wineNameElement.getProperty("innerText")).jsonValue()
+        console.log("Price found: " + winePrice)
+        try {
+            let wineNameElement = await rawWineInfo.$(".pwc-tile--description")
+            let wineName = await (await wineNameElement.getProperty("innerText")).jsonValue()
 
-        let wineCtId = await rawWineInfo.$eval(".product", (element) => {
-            return element.getAttribute("data-pid")
-        })
-        
-        return wineInfo = {
-            ["price"] : winePrice,
-            ["fullName"] : wineName,
-            ["ctId"] : `${wineCtId}`
+            let wineCtId = await rawWineInfo.$eval(".product", (element) => {
+                return element.getAttribute("data-pid")
+            })
+            
+            wineInfo = {
+                ["price"] : winePrice,
+                ["fullName"] : wineName,
+                ["ctId"] : `${wineCtId}`
+            }
+        } catch (error) {
+            console.error(error)
+        } finally {
+            return wineInfo
         }
     }
 

@@ -1,6 +1,7 @@
 import SearchBrowser from "../puppeteer/search-browser.js";
 
 const CT_SEARCH_URL = "https://www.continente.pt/pesquisa/?"
+const CT_BULK_URL = 'https://www.continente.pt/bebidas-e-garrafeira/vinhos/?start=0'
 
 export default class CTWineFetcher
 {
@@ -16,6 +17,16 @@ export default class CTWineFetcher
         this.page = await this.browser.getSearchPage()
         
         await this.page.goto('https://www.continente.pt/produto/mula-velha-reserva-regional-lisboa-vinho-tinto-mula-velha-5400380.html');
+        return this.page
+    }
+
+    async getWineBulkListingPage()
+    {
+        // return this.page
+        this.browser = new SearchBrowser()
+        this.page = await this.browser.getSearchPage()
+        
+        await this.page.goto(CT_BULK_URL);
         return this.page
     }
 
