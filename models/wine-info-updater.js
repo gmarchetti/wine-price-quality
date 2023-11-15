@@ -24,12 +24,14 @@ export default class WineUpdater
     async addQualityToPriceListing(pricesListing){
         
         let fullWineListing = []
+        let qualityFetchPromises = []
         let wineName
 
         // pricesListing.forEach(listing => {
         for (const listing of pricesListing)
         {
             let completedListing = {}
+            
             
             if(listing != null)
             {
@@ -39,15 +41,22 @@ export default class WineUpdater
                 completedListing["price"] = listing.price
                 completedListing["fullName"] = listing.fullName
                 completedListing["ctId"] = listing.ctId
-                completedListing["quality"] = await this.getWineQuality(wineName)
-                    .catch(error => {
-                        console.error(error)
-                        completedListing["quality"] = null
-                    })
+                qualityFetchPromises.push(this.getWineQuality(wineName))
 
                 fullWineListing.push(completedListing)
             }            
         };
+
+        await Promise.allSettled(qualityFetchPromises)
+            .then((results) => {
+                for(let i = 0; i < results.length; i++)
+                {
+                    if(results[i].status == "fulfilled")
+                    {
+                        fullWineListing[i]["quality"] = results[i].value
+                    }
+                }
+            })
 
         return fullWineListing
     }
