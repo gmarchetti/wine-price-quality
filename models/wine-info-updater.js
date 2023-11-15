@@ -2,7 +2,7 @@ import CTPageParser from "./parsers/ct-page-parser.js"
 import VivinoQualityFetcher from "./vivino-item-fetcher/vivino-quality-fetcher.js"
 import CTWineFetcher from "./ct-page-fetcher/ct-wine-page-fetcher.js"
 
-export default class Wine
+export default class WineUpdater
 {
     constructor()
     {
