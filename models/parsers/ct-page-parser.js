@@ -1,5 +1,3 @@
-import puppeteer, { ConsoleMessage } from "puppeteer"
-
 const CT_ITEM_TYPE = "http://schema.org/SomeProducts"
 
 export default class SingleItemParser 

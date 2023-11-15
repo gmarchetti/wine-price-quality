@@ -8,14 +8,18 @@ export default class VivinoQualityFetcher
         this.wineName = wineName
     }
 
-    async searchForTheWine()
+    async searchForTheWine(externalWineName)
     {
-        this.browser = new SearchBrowser()
+        if (this.browser == null){
+            this.browser = new SearchBrowser()
+        }
+        
+        let wineSearchName = externalWineName ? externalWineName : this.wineName
+        
         this.page = await this.browser.getSearchPage()
 
         // Navigate the page to a URL
-        await this.page.goto('https://www.vivino.com/search/wines?q=' + this.wineName);
-
+        await this.page.goto('https://www.vivino.com/search/wines?q=' + wineSearchName);
         // await this.page.screenshot({ path: './screenshot.jpg' })
 
         return this.page
@@ -24,6 +28,7 @@ export default class VivinoQualityFetcher
     async closeWinePage()
     {
         this.browser.closeSearchPage()
+        this.browser = null
     }
 
     async getWineQualityFromPage(externalPage)
