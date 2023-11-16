@@ -1,5 +1,6 @@
 import assert, { doesNotMatch } from 'assert';
 import WineInfoDao from '../../daos/wine-dao.js';
+import Wine from '../../models/wine.js'
 
 describe('WineDao', function () {
 
@@ -20,4 +21,22 @@ describe('WineDao', function () {
         wineDao.closeConnection()
     });
   });
+
+  describe('CRUD tests', function() {
+    const wineDao = new WineInfoDao("wine-info", "127.0.0.1", "guilherme", "admin")
+    const wine = new Wine("42", "test-wine", "0.99", "5.0")
+
+    beforeEach(async function(){
+        await wineDao.openConnection()
+    });
+
+    it('Should save wine object on DB', async function() {
+        await wineDao.saveWine(wine)
+    });
+
+    afterEach(async function(){
+        wineDao.closeConnection()
+    });
+  });
+
 });

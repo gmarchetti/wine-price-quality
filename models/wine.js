@@ -1,35 +1,38 @@
-import CTPageParser from "./parsers/ct-page-parser.js"
-import VivinoQualityFetcher from "./vivino-item-fetcher/vivino-quality-fetcher.js"
-import CTWineFetcher from "./ct-page-fetcher/ct-wine-page-fetcher.js"
-
 export default class Wine
 {
-    constructor(wineName)
+    constructor(ctId, name, price, quality)
     {
-        this.wineFetcher = new CTWineFetcher(wineName)
-        this.qualityFetcher = new VivinoQualityFetcher(wineName)        
+        this.wineInfo = {
+            ["ctId"] : ctId,
+            ["fullName"] : name,
+            ["price"] : price,
+            ["quality"] : quality
+        }
     }
 
-    async getWinePrice()
-    {   
-        let page = await this.wineFetcher.searchWine()
-        
-        this.wineParser = new CTPageParser(page)
-        let price = await this.wineParser.getPriceFromSearchPage(page)
-        
-        await this.wineFetcher.closeWinePage()
-        
-        return price
+    updateQuality(newQuality)
+    {
+        this.wineInfo.quality = newQuality
     }
 
-    async getWineQuality()
+    updateFullName(newName)
     {
-        console.log("Searching wine in Vivino")
-        await this.qualityFetcher.searchForTheWine()
+        this.wineInfo.fullName = newName
+    }
 
-        console.log("Parsing Wine Rating")
-        let quality = await this.qualityFetcher.getWineQualityFromPage()
+    updatePrice(newPrice)
+    {
+        this.wineInfo.price = newPrice
+    }
 
-        return quality
+    getCtId()
+    {
+        return this.wineInfo.ctId
+    }
+
+    toJson()
+    {
+        const data = Object.fromEntries(Object.entries(this.wineInfo).filter(([k,v]) => v))
+        return JSON.stringify(data)
     }
 }
