@@ -35,11 +35,12 @@ router.get("/update", (req, res) => {
 
     priceListing
         .then( prices => {
-            return wineUpdater.addQualityToPriceListing(prices, res)
-        }) 
-        .finally(() => {
+            // return wineUpdater.addQualityToPriceListing(prices, res)
             res.end()
-        })
+        }) 
+        // .finally(() => {
+        //     res.end()
+        // })
 })
 
 router.get("/", (req, res) => {        

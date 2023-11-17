@@ -9,8 +9,7 @@ export default class WineUpdater
     constructor()
     {
         this.wineFetcher = new CTWineFetcher()
-        this.wineParser = new CTPageParser()
-        this.qualityFetcher = new VivinoQualityFetcher()        
+        this.wineParser = new CTPageParser()        
     }
 
     async getWinePriceListing(responseChannel)
@@ -19,16 +18,25 @@ export default class WineUpdater
         this.totalRequestedWines = 0
         this.totalWinesWithQuality = 0
 
-        responseChannel.write("---- Parsing page 0 ----\n")
-        responseChannel.write("-- Total requested wines -- Wines with Quality --\n")
-        let page = await this.wineFetcher.getWineBulkListingPage()
-        let prices = await this.wineParser.getPricesFromListingPage(page)
+        let updaterPromise = new Promise(async (resolve, reject) => {
+            for (this.currentIndex = 0; this.currentIndex < 1; this.currentIndex++)
+            {
+                responseChannel.write(`---- Parsing page ${this.currentIndex} ----\n`)
+                responseChannel.write("-- Total requested wines -- Wines with Quality --\n")
+                let page = await this.wineFetcher.getWineBulkListingPage()
+                let prices = await this.wineParser.getPricesFromListingPage(page)
+                await this.addQualityToPriceListing(prices, responseChannel)
+            }        
+            
+            await this.wineFetcher.closeWinePage()
+            resolve()
+        })
         
-        await this.wineFetcher.closeWinePage()
         
-        return prices
+        return updaterPromise
     }
 
+    
     async addQualityToPriceListing(pricesListing, responseChannel){
         
         let fullWineListing = []
@@ -73,12 +81,14 @@ export default class WineUpdater
 
     async getWineQuality(wineName)
     {
+        const qualityFetcher = new VivinoQualityFetcher()
         console.log("Searching wine in Vivino")
-        await this.qualityFetcher.searchForTheWine(wineName)
+        await qualityFetcher.searchForTheWine(wineName)
 
         console.log("Parsing Wine Rating")
-        let quality = await this.qualityFetcher.getWineQualityFromPage()
+        let quality = await qualityFetcher.getWineQualityFromPage()
 
+        qualityFetcher.closeWinePage()
         return quality
     }
 
