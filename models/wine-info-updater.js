@@ -10,8 +10,7 @@ export default class WineUpdater
     {
         this.wineFetcher = new CTWineFetcher()
         this.wineParser = new CTPageParser()
-        this.qualityFetcher = new VivinoQualityFetcher()
-        let wineDao = new WineInfoDao("wine-info", "127.0.0.1", "guilherme", "admin")        
+        this.qualityFetcher = new VivinoQualityFetcher()        
     }
 
     async getWinePriceListing(index)
@@ -28,8 +27,9 @@ export default class WineUpdater
         
         let fullWineListing = []
         let qualityFetchPromises = []
+        let wineDao = new WineInfoDao("wine-info", "127.0.0.1", "guilherme", "admin")
+        await wineDao.openConnection()
 
-        // pricesListing.forEach(listing => {
         for (const listing of pricesListing)
         {
             
@@ -49,10 +49,14 @@ export default class WineUpdater
                 {
                     if(results[i].status == "fulfilled")
                     {
-                        fullWineListing[i].addQualityToPriceListing(results[i].value)
+                        fullWineListing[i].updateQuality(results[i].value)
+                        
                     }
                 }
             })
+        
+        await wineDao.saveAllWines(fullWineListing)
+        await wineDao.closeConnection()
 
         return fullWineListing
     }
@@ -66,5 +70,15 @@ export default class WineUpdater
         let quality = await this.qualityFetcher.getWineQualityFromPage()
 
         return quality
+    }
+
+    async fetchAllSavedWineInfo()
+    {
+    	let wineDao = new WineInfoDao("wine-info", "127.0.0.1", "guilherme", "admin")
+        await wineDao.openConnection()
+        
+        const savedData = await wineDao.getAllWines()
+
+        return savedData
     }
 }

@@ -2,7 +2,8 @@ import Wine from '../models/wine.js'
 import pkg from 'pg'
 const {Client} = pkg
 
-const DB_TABLE_NAME = "basic"
+const DB_TABLE_NAME = "basic-info"
+
 export default class WineInfoDao
 {
     constructor(dbName, addr, usr, pwd, table)
@@ -51,10 +52,15 @@ export default class WineInfoDao
     async getAllWines()
     {
         const sqlStmt = 
-        `SELECT info FROM ${this.tableName}`
+        `SELECT info FROM "${this.tableName}"`
 
         const {rows} = await this.client.query({text: sqlStmt, rowMode: "array"})
 
         return rows.flat()
+    }
+    async saveAllWines(wineList)
+    {
+        for(const wine of wineList)
+            await this.saveWine(wine)
     }
 }

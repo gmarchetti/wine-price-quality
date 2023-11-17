@@ -36,16 +36,13 @@ router.get("/update", (req, res) => {
         })
 })
 
-router.get("/", (req, res) => {
-    
+router.get("/", (req, res) => {        
+    let wineUpdater = new WineInfoUpdater()
 
-    priceListing
-        .then( prices => {
-            return wineUpdater.addQualityToPriceListing(prices)
-        }) 
-        .then( pricesWithQuality => {
-            res.json(pricesWithQuality)
-        })
+    wineUpdater.fetchAllSavedWineInfo()
+    .then( savedData => {
+        res.json(savedData)
+    })
 })
 
 export default router
