@@ -39,16 +39,22 @@ export default class WineInfoDao
         const id = wine.getCtId()
         const jsonValue = wine.toJson()
 
-        console.log(id + ":" + jsonValue)
-
         const sqlStmt = 
         `INSERT INTO "${this.tableName}" (id, info)
             VALUES('${id}','${jsonValue}') 
         ON CONFLICT (id) DO 
            UPDATE SET info = '${jsonValue}';`
 
-        console.log(sqlStmt)
-
         await this.client.query(sqlStmt)
+    }
+
+    async getAllWines()
+    {
+        const sqlStmt = 
+        `SELECT info FROM ${this.tableName}`
+
+        const {rows} = await this.client.query({text: sqlStmt, rowMode: "array"})
+
+        return rows.flat()
     }
 }
