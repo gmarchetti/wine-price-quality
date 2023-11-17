@@ -19,7 +19,7 @@ export default class WineUpdater
         this.totalWinesWithQuality = 0
 
         let updaterPromise = new Promise(async (resolve, reject) => {
-            for (this.currentIndex = 0; this.currentIndex < 1; this.currentIndex++)
+            for (this.currentIndex = 0; this.currentIndex < 2; this.currentIndex++)
             {
                 responseChannel.write(`---- Parsing page ${this.currentIndex} ----\n`)
                 responseChannel.write("-- Total requested wines -- Wines with Quality --\n")
@@ -29,6 +29,7 @@ export default class WineUpdater
             }        
             
             await this.wineFetcher.closeWinePage()
+            responseChannel.write("-- Finished Update Process --\n")
             resolve()
         })
         
@@ -51,27 +52,18 @@ export default class WineUpdater
             {
                 const wineName = listing.fullName
                 let wine = new Wine(listing.ctId, listing.fullName, listing.price)
-                qualityFetchPromises.push(this.getWineQuality(wineName))
-
+                // qualityFetchPromises.push(this.getWineQuality(wineName))
+                const quality = await this.getWineQuality(wineName)
+                wine.updateQuality(quality)
                 fullWineListing.push(wine)
+
+                responseChannel.write(`-- ${this.totalRequestedWines} -- ${this.totalWinesWithQuality} --\n`)
+                responseChannel.write(wine.toJson() + "\n")
+                this.totalWinesWithQuality++
             }            
         };
 
         this.totalRequestedWines += fullWineListing.length
-
-        await Promise.allSettled(qualityFetchPromises)
-            .then((results) => {
-                for(let i = 0; i < results.length; i++)
-                {
-                    if(results[i].status == "fulfilled")
-                    {
-                        fullWineListing[i].updateQuality(results[i].value)
-                        this.totalWinesWithQuality++
-                    }
-                    // responseChannel.write(fullWineListing[i].toJson())
-                    responseChannel.write(`-- ${this.totalRequestedWines} -- ${this.totalWinesWithQuality} --\n`)
-                }
-            })
         
         await wineDao.saveAllWines(fullWineListing)
         await wineDao.closeConnection()
@@ -84,11 +76,19 @@ export default class WineUpdater
         const qualityFetcher = new VivinoQualityFetcher()
         console.log("Searching wine in Vivino")
         await qualityFetcher.searchForTheWine(wineName)
+            .catch((error) => {
+                console.log(error)
+            })
 
         console.log("Parsing Wine Rating")
         let quality = await qualityFetcher.getWineQualityFromPage()
-
+            .catch((error) => {
+                quality = null
+                console.log(error)
+            }
+        )
         qualityFetcher.closeWinePage()
+
         return quality
     }
 
