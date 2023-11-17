@@ -2,6 +2,7 @@ import SearchBrowser from "../puppeteer/search-browser.js";
 
 const CT_SEARCH_URL = "https://www.continente.pt/pesquisa/?"
 const CT_BULK_URL = 'https://www.continente.pt/bebidas-e-garrafeira/vinhos/?start='
+const WINE_PER_PAGE = 24
 
 export default class CTWineFetcher
 {
@@ -25,8 +26,9 @@ export default class CTWineFetcher
         // return this.page
         this.browser = new SearchBrowser()
         this.page = await this.browser.getSearchPage()
+        const searchParams = index * WINE_PER_PAGE
         
-        await this.page.goto(CT_BULK_URL + index);
+        await this.page.goto(CT_BULK_URL + searchParams);
         return this.page
     }
 

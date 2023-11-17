@@ -23,7 +23,7 @@ export default class WineUpdater
             {
                 responseChannel.write(`---- Parsing page ${this.currentIndex} ----\n`)
                 responseChannel.write("-- Total requested wines -- Wines with Quality --\n")
-                let page = await this.wineFetcher.getWineBulkListingPage()
+                let page = await this.wineFetcher.getWineBulkListingPage(this.currentIndex)
                 let prices = await this.wineParser.getPricesFromListingPage(page)
                 await this.addQualityToPriceListing(prices, responseChannel)
             }        
