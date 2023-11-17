@@ -23,7 +23,7 @@ describe('WineDao', function () {
   });
 
   describe('CRUD tests', function() {
-    const wineDao = new WineInfoDao("wine-info", "127.0.0.1", "guilherme", "admin")
+    const wineDao = new WineInfoDao("wine-info", "127.0.0.1", "guilherme", "admin", "test")
     const wine = new Wine("42", "test-wine", "0.99", "5.0")
 
     beforeEach(async function(){

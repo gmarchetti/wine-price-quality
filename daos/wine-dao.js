@@ -2,9 +2,10 @@ import Wine from '../models/wine.js'
 import pkg from 'pg'
 const {Client} = pkg
 
+const DB_TABLE_NAME = "basic"
 export default class WineInfoDao
 {
-    constructor(dbName, addr, usr, pwd)
+    constructor(dbName, addr, usr, pwd, table)
     {
         this.client = new Client({
             host: '127.0.0.1',
@@ -13,6 +14,8 @@ export default class WineInfoDao
             user: usr,
             password: pwd,
           })
+
+        this.tableName = table ? table : DB_TABLE_NAME
     }
 
     async openConnection()
@@ -39,7 +42,7 @@ export default class WineInfoDao
         console.log(id + ":" + jsonValue)
 
         const sqlStmt = 
-        `INSERT INTO "test" (id, info)
+        `INSERT INTO "${this.tableName}" (id, info)
             VALUES('${id}','${jsonValue}') 
         ON CONFLICT (id) DO 
            UPDATE SET info = '${jsonValue}';`
