@@ -25,14 +25,20 @@ const router = express.Router()
 router.get("/update", (req, res) => {
     let wineUpdater = new WineInfoUpdater()
 
-    let priceListing = wineUpdater.getWinePriceListing()
+    res.writeHead(200, {
+        'Content-Type': 'text/plain; charset=utf-8',
+        'Transfer-Encoding': 'chunked',
+        'X-Content-Type-Options': 'nosniff'
+      });
+
+    let priceListing = wineUpdater.getWinePriceListing(res)
 
     priceListing
         .then( prices => {
-            return wineUpdater.addQualityToPriceListing(prices)
+            return wineUpdater.addQualityToPriceListing(prices, res)
         }) 
-        .then( pricesWithQuality => {
-            res.json(pricesWithQuality)
+        .finally(() => {
+            res.end()
         })
 })
 

@@ -13,8 +13,14 @@ export default class WineUpdater
         this.qualityFetcher = new VivinoQualityFetcher()        
     }
 
-    async getWinePriceListing(index)
+    async getWinePriceListing(responseChannel)
     {   
+        this.currentIndex = 0
+        this.totalRequestedWines = 0
+        this.totalWinesWithQuality = 0
+
+        responseChannel.write("---- Parsing page 0 ----\n")
+        responseChannel.write("-- Total requested wines -- Wines with Quality --\n")
         let page = await this.wineFetcher.getWineBulkListingPage()
         let prices = await this.wineParser.getPricesFromListingPage(page)
         
@@ -23,7 +29,7 @@ export default class WineUpdater
         return prices
     }
 
-    async addQualityToPriceListing(pricesListing){
+    async addQualityToPriceListing(pricesListing, responseChannel){
         
         let fullWineListing = []
         let qualityFetchPromises = []
@@ -43,6 +49,8 @@ export default class WineUpdater
             }            
         };
 
+        this.totalRequestedWines += fullWineListing.length
+
         await Promise.allSettled(qualityFetchPromises)
             .then((results) => {
                 for(let i = 0; i < results.length; i++)
@@ -50,8 +58,10 @@ export default class WineUpdater
                     if(results[i].status == "fulfilled")
                     {
                         fullWineListing[i].updateQuality(results[i].value)
-                        
+                        this.totalWinesWithQuality++
                     }
+                    // responseChannel.write(fullWineListing[i].toJson())
+                    responseChannel.write(`-- ${this.totalRequestedWines} -- ${this.totalWinesWithQuality} --\n`)
                 }
             })
         
