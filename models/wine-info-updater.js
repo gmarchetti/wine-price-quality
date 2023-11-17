@@ -1,6 +1,8 @@
 import CTPageParser from "./parsers/ct-page-parser.js"
 import VivinoQualityFetcher from "./vivino-item-fetcher/vivino-quality-fetcher.js"
 import CTWineFetcher from "./ct-page-fetcher/ct-wine-page-fetcher.js"
+import WineInfoDao from "../daos/wine-dao.js"
+import Wine from "./wine.js"
 
 export default class WineUpdater
 {
@@ -8,7 +10,8 @@ export default class WineUpdater
     {
         this.wineFetcher = new CTWineFetcher()
         this.wineParser = new CTPageParser()
-        this.qualityFetcher = new VivinoQualityFetcher()        
+        this.qualityFetcher = new VivinoQualityFetcher()
+        let wineDao = new WineInfoDao("wine-info", "127.0.0.1", "guilherme", "admin")        
     }
 
     async getWinePriceListing(index)
@@ -25,25 +28,18 @@ export default class WineUpdater
         
         let fullWineListing = []
         let qualityFetchPromises = []
-        let wineName
 
         // pricesListing.forEach(listing => {
         for (const listing of pricesListing)
         {
-            let completedListing = {}
-            
             
             if(listing != null)
             {
-                wineName = listing.fullName
-                console.log(wineName)
-
-                completedListing["price"] = listing.price
-                completedListing["fullName"] = listing.fullName
-                completedListing["ctId"] = listing.ctId
+                const wineName = listing.fullName
+                let wine = new Wine(listing.ctId, listing.fullName, listing.price)
                 qualityFetchPromises.push(this.getWineQuality(wineName))
 
-                fullWineListing.push(completedListing)
+                fullWineListing.push(wine)
             }            
         };
 
@@ -53,7 +49,7 @@ export default class WineUpdater
                 {
                     if(results[i].status == "fulfilled")
                     {
-                        fullWineListing[i]["quality"] = results[i].value
+                        fullWineListing[i].addQualityToPriceListing(results[i].value)
                     }
                 }
             })

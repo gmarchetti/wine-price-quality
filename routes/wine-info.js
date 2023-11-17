@@ -1,5 +1,4 @@
 import express from "express"
-import Wine from "../models/wine.js"
 import WineInfoUpdater from "../models/wine-info-updater.js"
 
 const router = express.Router()
@@ -23,11 +22,22 @@ const router = express.Router()
 //     })
 // })
 
-router.get("/", (req, res) => {
-    // let wineName = req.params.wineName
+router.get("/update", (req, res) => {
     let wineUpdater = new WineInfoUpdater()
 
     let priceListing = wineUpdater.getWinePriceListing()
+
+    priceListing
+        .then( prices => {
+            return wineUpdater.addQualityToPriceListing(prices)
+        }) 
+        .then( pricesWithQuality => {
+            res.json(pricesWithQuality)
+        })
+})
+
+router.get("/", (req, res) => {
+    
 
     priceListing
         .then( prices => {
