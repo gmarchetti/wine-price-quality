@@ -38,6 +38,14 @@ export default class WineInfoDao
     async saveWine(wine)
     {
         const id = wine.getCtId()
+
+        if (!wine.getQuality())
+        {
+            console.log("Searching for previously saved quality")
+            const savedWine = await this.getWineById(wine.getCtId())
+            wine.updateQuality(savedWine?.quality)
+        }
+
         const jsonValue = wine.toJson()
 
         const sqlStmt = 
@@ -47,6 +55,15 @@ export default class WineInfoDao
            UPDATE SET info = '${jsonValue}';`
 
         await this.client.query(sqlStmt)
+    }
+
+    async getWineById(id)
+    {
+        const sqlStmt = 
+        `SELECT info FROM "${this.tableName}" WHERE id=${id}::text`
+        const {rows} = await this.client.query({text: sqlStmt, rowMode: "array"})
+
+        return rows.flat()[0]
     }
 
     async getAllWines()

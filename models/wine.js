@@ -15,6 +15,12 @@ export default class Wine
         this.wineInfo.quality = newQuality
     }
 
+
+    getQuality()
+    {
+        return this.wineInfo.quality
+    }
+
     updateFullName(newName)
     {
         this.wineInfo.fullName = newName

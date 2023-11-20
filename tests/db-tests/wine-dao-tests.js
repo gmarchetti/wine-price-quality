@@ -45,6 +45,37 @@ describe('WineDao', function () {
         assert.equal(result.length, 2)
     })
 
+    it('Should return wine with id 42', async function(){
+        let wine42 = await wineDao.getWineById("42")
+
+        console.log(wine42)
+
+        assert.equal(wine42.ctId, "42")
+    })
+
+    it('Should not erase quality rating if it exists', async function(){
+        let wine42 = new Wine("42", "test-wine", "0.99", "5.0")
+        let wine42b = new Wine("42", "test-wine", "0.99")
+
+        await wineDao.saveWine(wine42)
+        await wineDao.saveWine(wine42b)
+        
+        let wineFromDB = await wineDao.getWineById("42")
+
+        console.log(wineFromDB)
+        assert.notEqual(wineFromDB.quality, null)    
+    })
+
+    it('Price should change after update', async function(){
+        let wine42 = new Wine("42", "test-wine", "1.99")
+        await wineDao.saveWine(wine42)
+
+        let wineFromDB = await wineDao.getWineById("42")
+
+        console.log(wineFromDB)
+        assert.equal(wineFromDB.price, "1.99")    
+    })
+
     afterEach(async function(){
         await wineDao.closeConnection()
     });
