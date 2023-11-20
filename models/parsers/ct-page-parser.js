@@ -1,6 +1,6 @@
 const CT_ITEM_TYPE = "http://schema.org/SomeProducts"
 
-export default class SingleItemParser 
+export default class CTWineParser 
 {
     constructor(page)
     {

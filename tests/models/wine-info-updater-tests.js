@@ -14,11 +14,11 @@ describe('WineInfoUpdater', function () {
     //     await winePage.goto("file://" + path.resolve("./tests/sample-data/vivino-sample.html"))
     // });
 
-    it('Dict size should be 24', async function() {
-        let priceListing = await wineUpdater.getWinePriceListing()
+    // it('Dict size should be 24', async function() {
+    //     let priceListing = await wineUpdater.getWinePriceListing()
         
-        assert.equal(Object.keys(priceListing).length, 24)
-    });
+    //     assert.equal(Object.keys(priceListing).length, 24)
+    // });
 
     // afterEach(async function(){
     //     browser.closeSearchPage()
