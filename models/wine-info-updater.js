@@ -19,13 +19,13 @@ export default class WineUpdater
         this.totalWinesWithQuality = 0
 
         let updaterPromise = new Promise(async (resolve, reject) => {
-            for (this.currentIndex = 0; this.currentIndex < 2; this.currentIndex++)
+            for (this.currentIndex = 0; this.currentIndex < 1; this.currentIndex++)
             {
                 responseChannel.write(`---- Parsing page ${this.currentIndex} ----\n`)
                 responseChannel.write("-- Total requested wines -- Wines with Quality --\n")
                 let page = await this.wineFetcher.getWineBulkListingPage(this.currentIndex)
-                let prices = await this.wineParser.getPricesFromListingPage(page)
-                await this.addQualityToPriceListing(prices, responseChannel)
+                let wines = await this.wineParser.getWinesFromListingPage(page)
+                await this.addQualityToPriceListing(wines, responseChannel)
             }        
             
             await this.wineFetcher.closeWinePage()
@@ -38,22 +38,17 @@ export default class WineUpdater
     }
 
     
-    async addQualityToPriceListing(pricesListing, responseChannel){
+    async addQualityToPriceListing(wines, responseChannel){
         
         let fullWineListing = []
-        let qualityFetchPromises = []
         let wineDao = new WineInfoDao("wine-info", "127.0.0.1", "guilherme", "admin")
         await wineDao.openConnection()
 
-        for (const listing of pricesListing)
+        for (const wine of wines)
         {
-            
-            if(listing != null)
+            if(wine != null)
             {
-                const wineName = listing.fullName
-                let wine = new Wine(listing.ctId, listing.fullName, listing.price)
-                // qualityFetchPromises.push(this.getWineQuality(wineName))
-                const quality = await this.getWineQuality(wineName)
+                const quality = await this.getWineQuality(wine)
                 wine.updateQuality(quality)
                 fullWineListing.push(wine)
 
@@ -71,11 +66,11 @@ export default class WineUpdater
         return fullWineListing
     }
 
-    async getWineQuality(wineName)
+    async getWineQuality(wine)
     {
         const qualityFetcher = new VivinoQualityFetcher()
         console.log("Searching wine in Vivino")
-        await qualityFetcher.searchForTheWine(wineName)
+        await qualityFetcher.searchForTheWine(wine.getSearchName())
             .catch((error) => {
                 console.log(error)
             })

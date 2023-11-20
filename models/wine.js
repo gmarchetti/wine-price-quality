@@ -15,6 +15,10 @@ export default class Wine
         this.wineInfo.quality = newQuality
     }
 
+    getSearchName()
+    {
+        return this.wineInfo.fullName
+    }
 
     getQuality()
     {
@@ -29,6 +33,11 @@ export default class Wine
     updatePrice(newPrice)
     {
         this.wineInfo.price = newPrice
+    }
+
+    getPrice()
+    {
+        return this.wineInfo.price
     }
 
     getCtId()

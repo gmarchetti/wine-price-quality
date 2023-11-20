@@ -46,53 +46,53 @@ describe('CTPageParser', function () {
     });
 
     it('Dict size should be 24', async function () {        
-        let priceList = await priceParser.getPricesFromListingPage(winePage)
+        let priceList = await priceParser.getWinesFromListingPage(winePage)
         assert.equal(Object.keys(priceList).length, 24)
     });
     
     it('Price attribute should not be empty', async function () {        
-      let priceList = await priceParser.getPricesFromListingPage(winePage)
-      assert.notEqual(priceList[0].price, null)
+      let priceList = await priceParser.getWinesFromListingPage(winePage)
+      assert.notEqual(priceList[0].getPrice(), null)
     });    
 
     it('First price should be 3.29', async function () {        
-      let priceList = await priceParser.getPricesFromListingPage(winePage)
-      assert.equal(priceList[0].price, 3.29)
+      let priceList = await priceParser.getWinesFromListingPage(winePage)
+      assert.equal(priceList[0].getPrice(), 3.29)
     });
 
     it('Last price should be 4.99', async function () {        
-      let priceList = await priceParser.getPricesFromListingPage(winePage)
-      assert.equal(priceList[priceList.length - 1].price, 4.99)
+      let priceList = await priceParser.getWinesFromListingPage(winePage)
+      assert.equal(priceList[priceList.length - 1].getPrice(), 4.99)
     });
 
     it('Full name attribute should not be empty', async function () {        
-      let priceList = await priceParser.getPricesFromListingPage(winePage)
-      assert.notEqual(priceList[0].fullName, null)
+      let priceList = await priceParser.getWinesFromListingPage(winePage)
+      assert.notEqual(priceList[0].getSearchName(), null)
     });
 
     it('First full name should be Mula Velha Reserva Regional Lisboa Vinho Tinto', async function () {        
-      let priceList = await priceParser.getPricesFromListingPage(winePage)
-      assert.equal(priceList[0].fullName, "Mula Velha Reserva Regional Lisboa Vinho Tinto")
+      let priceList = await priceParser.getWinesFromListingPage(winePage)
+      assert.equal(priceList[0].getSearchName(), "Mula Velha Reserva Regional Lisboa Vinho Tinto")
     });
 
     it('Last full name should be 4.99', async function () {        
-      let priceList = await priceParser.getPricesFromListingPage(winePage)
-      assert.equal(priceList[priceList.length - 1].fullName, "Tapada das Lebres Signature Regional Alentejano Vinho Tinto")
+      let priceList = await priceParser.getWinesFromListingPage(winePage)
+      assert.equal(priceList[priceList.length - 1].getSearchName(), "Tapada das Lebres Signature Regional Alentejano Vinho Tinto")
     });
 
     it('Continente Id should not be empty', async function () {        
-      let priceList = await priceParser.getPricesFromListingPage(winePage)
-      assert.notEqual(priceList[0].ctId, null)
+      let priceList = await priceParser.getWinesFromListingPage(winePage)
+      assert.notEqual(priceList[0].getCtId(), null)
     });
 
     it('First Continente Id should be 5400380', async function () {        
-      let priceList = await priceParser.getPricesFromListingPage(winePage)
-      assert.equal(priceList[0].ctId, "5400380")
+      let priceList = await priceParser.getWinesFromListingPage(winePage)
+      assert.equal(priceList[0].getCtId(), "5400380")
     });
 
     it('14th Continente Id should be 6037014', async function () {        
-      let priceList = await priceParser.getPricesFromListingPage(winePage)
-      assert.equal(priceList[13].ctId, "6037014")
+      let priceList = await priceParser.getWinesFromListingPage(winePage)
+      assert.equal(priceList[13].getCtId(), "6037014")
     });
 
     afterEach(async function(){

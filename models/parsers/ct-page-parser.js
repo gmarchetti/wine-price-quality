@@ -1,3 +1,5 @@
+import Wine from "../wine.js"
+
 const CT_ITEM_TYPE = "http://schema.org/SomeProducts"
 
 export default class CTWineParser 
@@ -17,11 +19,8 @@ export default class CTWineParser
 
     async getWineInfo(rawWineInfo)
     {
-        let wineInfo = null
-
+        let wine
         let winePrice = await this.getPrice(rawWineInfo)
-
-        console.log("Price found: " + winePrice)
         try {
             let wineNameElement = await rawWineInfo.$(".pwc-tile--description")
             let wineName = await (await wineNameElement.getProperty("innerText")).jsonValue()
@@ -30,15 +29,12 @@ export default class CTWineParser
                 return element.getAttribute("data-pid")
             })
             
-            wineInfo = {
-                ["price"] : winePrice,
-                ["fullName"] : wineName,
-                ["ctId"] : `${wineCtId}`
-            }
+        wine = new Wine(wineCtId, wineName, winePrice)
+
         } catch (error) {
             console.error(error)
         } finally {
-            return wineInfo
+            return wine
         }
     }
 
@@ -48,7 +44,7 @@ export default class CTWineParser
         return this.getPrice(priceElement)
     }
 
-    async getPricesFromListingPage(page)
+    async getWinesFromListingPage(page)
     {
         let wineList = []
         let rawWineList = await page.$$(`[itemType="${CT_ITEM_TYPE}"] > [data-idx]`)
