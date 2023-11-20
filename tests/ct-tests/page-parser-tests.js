@@ -67,17 +67,37 @@ describe('CTPageParser', function () {
 
     it('Full name attribute should not be empty', async function () {        
       let priceList = await priceParser.getWinesFromListingPage(winePage)
-      assert.notEqual(priceList[0].getSearchName(), null)
+      assert.notEqual(priceList[0].getFullName(), null)
     });
 
     it('First full name should be Mula Velha Reserva Regional Lisboa Vinho Tinto', async function () {        
       let priceList = await priceParser.getWinesFromListingPage(winePage)
-      assert.equal(priceList[0].getSearchName(), "Mula Velha Reserva Regional Lisboa Vinho Tinto")
+      assert.equal(priceList[0].getFullName(), "Mula Velha Reserva Regional Lisboa Vinho Tinto")
     });
 
-    it('Last full name should be 4.99', async function () {        
+    it('First Continent Link should be https://www.continente.pt/produto/mula-velha-reserva-regional-lisboa-vinho-tinto-mula-velha-5400380.html', async function () {        
       let priceList = await priceParser.getWinesFromListingPage(winePage)
-      assert.equal(priceList[priceList.length - 1].getSearchName(), "Tapada das Lebres Signature Regional Alentejano Vinho Tinto")
+      assert.equal(priceList[0].getCtHref(), "https://www.continente.pt/produto/mula-velha-reserva-regional-lisboa-vinho-tinto-mula-velha-5400380.html")
+    });
+
+    it('First Manufacturer should be Mula Velha', async function () {        
+      let priceList = await priceParser.getWinesFromListingPage(winePage)
+      assert.equal(priceList[0].getManufacturer(), "Mula Velha")
+    });
+
+    it('First Img Href should be Mula Velha Reserva Regional Lisboa Vinho Tinto', async function () {        
+      let priceList = await priceParser.getWinesFromListingPage(winePage)
+      assert.equal(priceList[0].getImgHref(), "https://www.continente.pt/dw/image/v2/BDVS_PRD/on/demandware.static/-/Sites-col-master-catalog/default/dw14e64774/images/col/540/5400380-frente.jpg?sw=280&sh=280")
+    });
+
+    it('First item type Vinho Tinto', async function () {        
+      let priceList = await priceParser.getWinesFromListingPage(winePage)
+      assert.equal(priceList[0].getType(), "Vinho Tinto")
+    });
+
+    it('Last full name should be Tapada das Lebres Signature Regional Alentejano Vinho Tinto', async function () {        
+      let priceList = await priceParser.getWinesFromListingPage(winePage)
+      assert.equal(priceList[priceList.length - 1].getFullName(), "Tapada das Lebres Signature Regional Alentejano Vinho Tinto")
     });
 
     it('Continente Id should not be empty', async function () {        

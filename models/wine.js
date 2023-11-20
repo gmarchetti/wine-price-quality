@@ -10,12 +10,57 @@ export default class Wine
         }
     }
 
+    addCtHref(href)
+    {
+        this.wineInfo.ctHref = href
+    }
+
+    getCtHref()
+    {
+        return this.wineInfo.ctHref
+    }
+
+    addBrand(brand)
+    {
+        this.wineInfo.brand = brand
+    }
+
+    getManufacturer()
+    {
+        return this.wineInfo.brand
+    }
+
+    addImgHref(imgHref)
+    {
+        this.wineInfo.imgHref = imgHref
+    }
+
+    getImgHref()
+    {
+        return this.wineInfo.imgHref
+    }
+
+    addType(wineType)
+    {
+        this.wineInfo.type = wineType
+    }
+
+    getType()
+    {
+        return this.wineInfo.type
+    }
+
     updateQuality(newQuality)
     {
         this.wineInfo.quality = newQuality
     }
 
     getSearchName()
+    {
+        
+    }
+
+    getFullName()
     {
         return this.wineInfo.fullName
     }
