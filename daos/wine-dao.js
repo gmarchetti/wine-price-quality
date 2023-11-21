@@ -55,7 +55,11 @@ export default class WineInfoDao
            UPDATE SET info = '${jsonValue}';`
 
         await this.client.query(sqlStmt)
-            .catch( (error) => {console.error(error)})
+            .catch( (error) => {
+                console.log("SQL stmt resuted in error")
+                console.log(sqlStmt)
+                console.error(error)
+            })
     }
 
     async getWineById(id)
