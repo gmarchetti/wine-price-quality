@@ -3,23 +3,23 @@ import SearchBrowser from '../puppeteer/search-browser.js';
 
 export default class VivinoQualityFetcher
 {
-    constructor(wineName)
+    constructor(wine)
     {
-        this.wineName = wineName
+        this.wine = wine
     }
 
-    async searchForTheWine(externalWineName)
+    async searchForTheWine(externalWine)
     {
         if (this.browser == null){
             this.browser = new SearchBrowser()
         }
         
-        let wineSearchName = externalWineName ? externalWineName : this.wineName
+        let wineToSearch = externalWine ? externalWine : this.wine
         
         this.page = await this.browser.getSearchPage()
 
         // Navigate the page to a URL
-        await this.page.goto('https://www.vivino.com/search/wines?q=' + wineSearchName);
+        await this.page.goto('https://www.vivino.com/search/wines?q=' + wineToSearch.getSearchName());
         // await this.page.screenshot({ path: './screenshot.jpg' })
 
         return this.page

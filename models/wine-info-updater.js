@@ -72,7 +72,7 @@ export default class WineUpdater
         let quality
 
         console.log("Searching wine in Vivino")
-        await qualityFetcher.searchForTheWine(wine.getSearchName())
+        await qualityFetcher.searchForTheWine(wine)
             .catch((error) => {
                 console.log(error)
             })
