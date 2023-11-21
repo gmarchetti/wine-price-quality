@@ -25,7 +25,7 @@ export default class Wine
         this.wineInfo.brand = brand
     }
 
-    getManufacturer()
+    getBrand()
     {
         return this.wineInfo.brand
     }

@@ -8,6 +8,30 @@ export default class VivinoQualityFetcher
         this.wine = wine
     }
 
+    buildSearchName(wine)
+    {
+        
+
+        const fullName = wine.getFullName()
+        const wineType = wine.getType()
+        const brand = wine.getBrand()
+
+        let removedType = fullName.split(wineType)[0]
+        removedType = removedType.trim()
+
+        let shortName = removedType.split("Regional")[0]
+        shortName = shortName.replace("DOC", "")
+        shortName = shortName.trim()
+
+        let shortType = wineType.split("Vinho")[1]
+        shortType = shortType.replace("Tinto", "")
+        shortType = shortType.trim()
+
+        let searchName = `${shortName} ${shortType}`
+        
+        return searchName
+    }
+
     async searchForTheWine(externalWine)
     {
         if (this.browser == null){
@@ -17,9 +41,11 @@ export default class VivinoQualityFetcher
         let wineToSearch = externalWine ? externalWine : this.wine
         
         this.page = await this.browser.getSearchPage()
-
+        
+        const encodedUrl = encodeURI('https://www.vivino.com/search/wines?q=' + this.buildSearchName(wineToSearch))
+        
         // Navigate the page to a URL
-        await this.page.goto('https://www.vivino.com/search/wines?q=' + wineToSearch.getSearchName());
+        await this.page.goto(encodedUrl);
         // await this.page.screenshot({ path: './screenshot.jpg' })
 
         return this.page
