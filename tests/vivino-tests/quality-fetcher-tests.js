@@ -58,7 +58,7 @@ describe('VivinoQualityFetcher', function () {
       assert.equal(quality, 3.9)
     });
 
-    it("Papa Figos Quality should be 3.7", async function() {
+    it("Albenaz Escadaria Maior Quality should be 3.7", async function() {
       const wine = new Wine('6526528', 'Albenaz Escadaria Maior Premium DOC Douro Vinho Tinto', "7.99")
       wine.addBrand("Albenaz")
       wine.addType("Vinho Tinto")

@@ -1,7 +1,7 @@
 import assert, { doesNotMatch } from 'assert';
 import WineInfoDao from '../../daos/wine-dao.js';
 import Wine from '../../models/wine.js'
-import { it } from 'mocha';
+import { expect } from 'chai';
 
 describe('WineDao', function () {
 
@@ -24,7 +24,7 @@ describe('WineDao', function () {
   });
 
   describe('CRUD tests', function() {
-    let wineDao = new WineInfoDao("wine-info", "127.0.0.1", "guilherme", "admin", "test")
+    let wineDao
     const wine = new Wine("42", "test-wine", "0.99", "5.0")
 
     beforeEach(async function(){
@@ -81,4 +81,26 @@ describe('WineDao', function () {
     });
   });
 
+    describe('Error handling tests', function() {
+        let wineDao
+        const wine = new Wine("42", "test-wine", "0.99", "5.0")
+        const wine2 = new Wine("43", "test-wine-2", "1.99", "1.0")
+
+        beforeEach(async function(){
+            wineDao = new WineInfoDao("wine-info", "127.0.0.1", "guilherme", "admin", "wrong-table")
+            await wineDao.openConnection()
+        })
+
+        it("Should not throw an error when saving single item in wrong table", async function(){
+            expect(async () => (await wineDao.saveWine(wine))).to.not.throw(Error)
+        });
+
+        it("Should not throw an error when saving multiple items in wrong table", async function(){
+            expect(async () => (await wineDao.saveAllWines([wine, wine2]))).to.not.throw(Error)
+        });
+
+        afterEach(async function(){
+            await wineDao.closeConnection()
+        });
+    })
 });

@@ -82,7 +82,7 @@ describe('CTPageParser', function () {
 
     it('First Manufacturer should be Mula Velha', async function () {        
       let priceList = await priceParser.getWinesFromListingPage(winePage)
-      assert.equal(priceList[0].getManufacturer(), "Mula Velha")
+      assert.equal(priceList[0].getBrand(), "Mula Velha")
     });
 
     it('First Img Href should be Mula Velha Reserva Regional Lisboa Vinho Tinto', async function () {        
