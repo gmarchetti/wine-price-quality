@@ -55,11 +55,6 @@ export default class Wine
         this.wineInfo.quality = newQuality
     }
 
-    getSearchName()
-    {
-        
-    }
-
     getFullName()
     {
         return this.wineInfo.fullName
