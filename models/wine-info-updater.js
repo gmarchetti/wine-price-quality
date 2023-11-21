@@ -12,14 +12,19 @@ export default class WineUpdater
         this.wineParser = new CTPageParser()        
     }
 
-    async getWinePriceListing(responseChannel)
+    async getWinePriceListing(responseChannel, numPages)
     {   
+
+        const pageLimit = numPages ? numPages : 0
+
+        console.log(pageLimit)
+
         this.currentIndex = 0
         this.totalRequestedWines = 0
         this.totalWinesWithQuality = 0
 
         let updaterPromise = new Promise(async (resolve, reject) => {
-            for (this.currentIndex = 0; this.currentIndex < 1; this.currentIndex++)
+            for (this.currentIndex = 0; this.currentIndex < pageLimit; this.currentIndex++)
             {
                 responseChannel.write(`---- Parsing page ${this.currentIndex} ----\n`)
                 responseChannel.write("-- Total requested wines -- Wines with Quality --\n")
@@ -71,13 +76,11 @@ export default class WineUpdater
         const qualityFetcher = new VivinoQualityFetcher()
         let quality
 
-        console.log("Searching wine in Vivino")
         await qualityFetcher.searchForTheWine(wine)
             .catch((error) => {
                 console.log(error)
             })
 
-        console.log("Parsing Wine Rating")
         quality = await qualityFetcher.getWineQualityFromPage()
             .catch((error) => {
                 quality = null

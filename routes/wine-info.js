@@ -23,6 +23,8 @@ const router = express.Router()
 // })
 
 router.get("/update", (req, res) => {
+    let numPages = req.query.pages
+
     let wineUpdater = new WineInfoUpdater()
 
     res.writeHead(200, {
@@ -31,16 +33,12 @@ router.get("/update", (req, res) => {
         'X-Content-Type-Options': 'nosniff'
       });
 
-    let priceListing = wineUpdater.getWinePriceListing(res)
+    let priceListing = wineUpdater.getWinePriceListing(res, numPages)
 
     priceListing
         .then( prices => {
-            // return wineUpdater.addQualityToPriceListing(prices, res)
             res.end()
         }) 
-        // .finally(() => {
-        //     res.end()
-        // })
 })
 
 router.get("/", (req, res) => {        

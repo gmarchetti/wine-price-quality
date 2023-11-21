@@ -49,6 +49,6 @@ export default class CTWineFetcher
 
     async closeWinePage()
     {
-        this.browser.closeSearchPage()
+        this.browser?.closeSearchPage()
     }
 }
