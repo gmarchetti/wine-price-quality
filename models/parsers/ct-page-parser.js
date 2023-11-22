@@ -26,6 +26,7 @@ export default class CTWineParser
         try {
             let wineNameElement = await rawWineInfo.$(".pwc-tile--description")
             let wineName = await (await wineNameElement.getProperty("innerText")).jsonValue()
+            wineName = wineName.replace("'", "")
             
             let wineCtId = await rawWineInfo.$eval(".product", (element) => {
                 return element.getAttribute("data-pid")
