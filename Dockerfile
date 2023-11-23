@@ -34,6 +34,6 @@ COPY routes ./routes
 COPY daos ./daos
 COPY index.js ./
 
-EXPOSE 3000
+EXPOSE 80
 
 CMD [ "node", "index.js"]
