@@ -1,37 +1,38 @@
-import Wine from '../models/wine.js'
-import pkg from 'pg'
-const {Client} = pkg
+import knex from 'knex'
 
 const DB_TABLE_NAME = "basic-info"
 
 export default class WineInfoDao
 {
-    constructor(dbName, addr, usr, pwd, table)
+    constructor(table)
     {
-        this.client = new Client({
-            host: '127.0.0.1',
-            port: 5432,
-            database: dbName,
-            user: usr,
-            password: pwd,
-          })
-
+        this.client = knex({
+            client: "pg",
+            connection: {
+                host: process.env.DB_ADDR || '127.0.0.1',
+                port: 5432,
+                database: "wine-info",
+                user: "guilherme",
+                password: "admin",
+            }
+        })
+            
         this.tableName = table || DB_TABLE_NAME
     }
 
     async openConnection()
     {
-        return await this.client.connect()
+
     }
 
     async closeConnection()
     {
-        return await this.client.end()
+
     }
 
     async getTime()
     {
-        const result = await this.client.query('SELECT NOW()')
+        const result = await this.client.raw('SELECT NOW()')
         return result.rows[0].now
     }
 
@@ -54,7 +55,7 @@ export default class WineInfoDao
         ON CONFLICT (id) DO 
            UPDATE SET info = '${jsonValue}';`
 
-        await this.client.query(sqlStmt)
+        await this.client.raw(sqlStmt)
             .catch( (error) => {
                 console.log("SQL stmt resuted in error")
                 console.log(sqlStmt)
@@ -64,21 +65,18 @@ export default class WineInfoDao
 
     async getWineById(id)
     {
-        const sqlStmt = 
-        `SELECT info FROM "${this.tableName}" WHERE id=${id}::text`
-        const {rows} = await this.client.query({text: sqlStmt, rowMode: "array"})
+        const row = await this.client.pluck("info")
+            .from(this.tableName)
+            .where("id", id)
 
-        return rows.flat()[0]
+        return row.flat()[0]
     }
 
     async getAllWines()
     {
-        const sqlStmt = 
-        `SELECT info FROM "${this.tableName}"`
-
-        const {rows} = await this.client.query({text: sqlStmt, rowMode: "array"})
-
-        return rows.flat()
+        const rows = await this.client.table(this.tableName).pluck("info")
+        console.log(rows)
+        return rows
     }
     async saveAllWines(wineList)
     {

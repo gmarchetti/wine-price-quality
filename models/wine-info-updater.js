@@ -46,7 +46,7 @@ export default class WineUpdater
     async addQualityToPriceListing(wines, responseChannel){
         
         let fullWineListing = []
-        let wineDao = new WineInfoDao("wine-info", "127.0.0.1", "guilherme", "admin")
+        let wineDao = new WineInfoDao()
         await wineDao.openConnection()
 
         for (const wine of wines)
@@ -94,7 +94,7 @@ export default class WineUpdater
 
     async fetchAllSavedWineInfo()
     {
-    	let wineDao = new WineInfoDao("wine-info", "127.0.0.1", "guilherme", "admin")
+    	let wineDao = new WineInfoDao()
         await wineDao.openConnection()
         
         const savedData = await wineDao.getAllWines()

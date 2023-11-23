@@ -6,7 +6,7 @@ import { expect } from 'chai';
 describe('WineDao', function () {
 
   describe('Connection tests', function() {
-    const wineDao = new WineInfoDao("wine-info", "127.0.0.1", "guilherme", "admin")
+    const wineDao = new WineInfoDao()
 
     beforeEach(async function(){
         await wineDao.openConnection()
@@ -28,7 +28,7 @@ describe('WineDao', function () {
     const wine = new Wine("42", "test-wine", "0.99", "5.0")
 
     beforeEach(async function(){
-        wineDao = new WineInfoDao("wine-info", "127.0.0.1", "guilherme", "admin", "test")
+        wineDao = new WineInfoDao("test")
         await wineDao.openConnection()
     });
 
@@ -43,6 +43,8 @@ describe('WineDao', function () {
         const result = await wineDao.getAllWines()
 
         assert.equal(result.length, 2)
+        assert.equal(result[0].ctId, 42)
+        assert.equal(result[1].ctId, 43)
     })
 
     it('Should return wine with id 42', async function(){
@@ -87,7 +89,7 @@ describe('WineDao', function () {
         const wine2 = new Wine("43", "test-wine-2", "1.99", "1.0")
 
         beforeEach(async function(){
-            wineDao = new WineInfoDao("wine-info", "127.0.0.1", "guilherme", "admin", "wrong-table")
+            wineDao = new WineInfoDao("wrong-table")
             await wineDao.openConnection()
         })
 

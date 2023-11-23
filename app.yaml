@@ -13,4 +13,7 @@
 
 # [START app_yaml]
 runtime: nodejs18
+
+env_variables:
+  DB_ADDR: 34.76.77.160
 # [END app_yaml]
