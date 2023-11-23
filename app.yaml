@@ -15,5 +15,5 @@
 runtime: nodejs18
 
 env_variables:
-  DB_ADDR: 34.76.77.160
+  DB_CONNECTION_NAME: arcane-optics-212101:europe-west1:wine-info-db
 # [END app_yaml]

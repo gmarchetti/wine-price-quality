@@ -5,16 +5,30 @@ const DB_TABLE_NAME = "basic-info"
 export default class WineInfoDao
 {
     constructor(table)
-    {
-        this.client = knex({
-            client: "pg",
-            connection: {
-                host: process.env.DB_ADDR || '127.0.0.1',
+    {   
+        let connectionInfo
+
+        if (process.env.DB_CONNECTION_NAME)
+        {
+            connectionInfo = {
+                database: "wine-info",
+                user: "guilherme",
+                password: "admin",
+                host: `/cloudsql/${process.env.DB_CONNECTION_NAME}`
+            }
+        } else {
+            connectionInfo = {
+                host: '127.0.0.1',
                 port: 5432,
                 database: "wine-info",
                 user: "guilherme",
                 password: "admin",
-            }
+            } 
+        }
+
+        this.client = knex({
+            client: "pg",
+            connection: connectionInfo
         })
             
         this.tableName = table || DB_TABLE_NAME

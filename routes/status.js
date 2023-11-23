@@ -15,10 +15,9 @@ router.get("/status", (req, res) => {
     }
 
     const wineDao = new WineInfoDao()
-    wineDao.openConnection()
+    wineDao.getTime()
         .catch(() => {
             dbConnectionStatus = "failed"
-            
         })
         .finally(() => {
             status.dbConnection = dbConnectionStatus
