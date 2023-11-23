@@ -31,6 +31,7 @@ RUN npm i ./puppeteer-browsers-latest.tgz \
 # Copy local directories to the current local directory of our docker image (/app)
 COPY models ./models
 COPY routes ./routes
+COPY daos ./daos
 COPY index.js ./
 
 EXPOSE 3000
