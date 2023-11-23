@@ -75,7 +75,7 @@ export default class WineInfoDao
     async getAllWines()
     {
         const rows = await this.client.table(this.tableName).pluck("info")
-        console.log(rows)
+
         return rows
     }
     async saveAllWines(wineList)
