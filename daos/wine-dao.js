@@ -16,7 +16,7 @@ export default class WineInfoDao
             password: pwd,
           })
 
-        this.tableName = table ? table : DB_TABLE_NAME
+        this.tableName = table || DB_TABLE_NAME
     }
 
     async openConnection()

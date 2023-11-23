@@ -15,7 +15,7 @@ export default class WineUpdater
     async getWinePriceListing(responseChannel, numPages)
     {   
 
-        const pageLimit = numPages ? numPages : 0
+        const pageLimit = numPages || 0
 
         console.log(pageLimit)
 

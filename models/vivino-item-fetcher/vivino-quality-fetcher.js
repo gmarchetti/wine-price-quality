@@ -38,7 +38,7 @@ export default class VivinoQualityFetcher
             this.browser = new SearchBrowser()
         }
         
-        let wineToSearch = externalWine ? externalWine : this.wine
+        let wineToSearch = externalWine || this.wine
         
         this.page = await this.browser.getSearchPage()
         
@@ -59,7 +59,7 @@ export default class VivinoQualityFetcher
 
     async getWineQualityFromPage(externalPage)
     {
-        let winePage = externalPage ? externalPage : this.page
+        let winePage = externalPage || this.page
         if (winePage == null)
         {
             throw new Error("Neither internal or external wine page provided")
