@@ -98,7 +98,7 @@ export default class WineInfoDao
 
         const orderedRows = await this.client.table(this.tableName)
             .pluck("info")
-            .orderByRaw(`(info ->> '${orderBy}')::FLOAT ${orderType}`)
+            .orderByRaw(`(info ->> '${orderBy}')::FLOAT ${orderType} NULLS LAST`)
 
         return orderedRows
     }
