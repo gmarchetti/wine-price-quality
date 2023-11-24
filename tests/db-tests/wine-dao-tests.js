@@ -1,5 +1,5 @@
 import assert, { doesNotMatch } from 'assert';
-import WineInfoDao from '../../daos/wine-dao.js';
+import WineInfoDao, { ORDER_ASC, ORDER_DESC, WINE_PRICE, WINE_QUALITY } from '../../daos/wine-dao.js';
 import Wine from '../../models/wine.js'
 import { expect } from 'chai';
 
@@ -43,8 +43,42 @@ describe('WineDao', function () {
         const result = await wineDao.getAllWines()
 
         assert.equal(result.length, 2)
-        assert.equal(result[0].ctId, 42)
-        assert.equal(result[1].ctId, 43)
+    })
+
+    it('Should retrieve 2 wines, higher quality at first row', async function() {
+        await wineDao.saveWine(wine)
+        await wineDao.saveWine(new Wine("43", "test-wine-2", "1.99", "1.0"))
+
+        const result = await wineDao.getAllWines(WINE_QUALITY, ORDER_DESC)
+        assert.equal(result.length, 2)
+        expect(parseFloat(result[0].quality)).to.be.greaterThan(parseFloat(result[1].quality))
+    })
+
+    it('Should retrieve 2 wines, lower quality at first row', async function() {
+        await wineDao.saveWine(wine)
+        await wineDao.saveWine(new Wine("43", "test-wine-2", "1.99", "1.0"))
+
+        const result = await wineDao.getAllWines(WINE_QUALITY, ORDER_ASC)
+        assert.equal(result.length, 2)
+        expect(parseFloat(result[0].quality)).to.be.lessThan(parseFloat(result[1].quality))
+    })
+
+    it('Should retrieve 2 wines, higher price at first row', async function() {
+        await wineDao.saveWine(wine)
+        await wineDao.saveWine(new Wine("43", "test-wine-2", "1.99", "1.0"))
+
+        const result = await wineDao.getAllWines(WINE_PRICE, ORDER_DESC)
+        assert.equal(result.length, 2)
+        expect(parseFloat(result[0].price)).to.be.greaterThan(parseFloat(result[1].price))
+    })
+
+    it('Should retrieve 2 wines, lower price at first row', async function() {
+        await wineDao.saveWine(wine)
+        await wineDao.saveWine(new Wine("43", "test-wine-2", "1.99", "1.0"))
+
+        const result = await wineDao.getAllWines(WINE_PRICE, ORDER_ASC)
+        assert.equal(result.length, 2)
+        expect(parseFloat(result[0].price)).to.be.lessThan(parseFloat(result[1].price))
     })
 
     it('Should return wine with id 42', async function(){

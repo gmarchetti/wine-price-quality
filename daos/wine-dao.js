@@ -2,6 +2,11 @@ import knex from 'knex'
 
 const DB_TABLE_NAME = "basic-info"
 
+export const WINE_QUALITY = "quality"
+export const WINE_PRICE = "price"
+export const ORDER_DESC = "DESC"
+export const ORDER_ASC = "ASC"
+
 export default class WineInfoDao
 {
     constructor(table)
@@ -86,11 +91,16 @@ export default class WineInfoDao
         return row.flat()[0]
     }
 
-    async getAllWines()
-    {
-        const rows = await this.client.table(this.tableName).pluck("info")
+    async getAllWines( info, type )
+    {   
+        const orderBy = info || WINE_QUALITY
+        const orderType = type || ORDER_DESC
 
-        return rows
+        const orderedRows = await this.client.table(this.tableName)
+            .pluck("info")
+            .orderByRaw(`(info ->> '${orderBy}')::FLOAT ${orderType}`)
+
+        return orderedRows
     }
     async saveAllWines(wineList)
     {
