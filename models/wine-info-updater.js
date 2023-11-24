@@ -74,21 +74,14 @@ export default class WineUpdater
     async getWineQuality(wine)
     {
         const qualityFetcher = new VivinoQualityFetcher()
-        let quality
-
         await qualityFetcher.searchForTheWine(wine)
             .catch((error) => {
                 console.log(error)
             })
 
-        quality = await qualityFetcher.getWineQualityFromPage()
-            .catch((error) => {
-                quality = 0
-                console.log(error)
-            }
-        )
+        const quality = await qualityFetcher.getWineQualityFromPage()
         qualityFetcher.closeWinePage()
-
+        
         return quality
     }
 

@@ -68,6 +68,10 @@ export default class VivinoQualityFetcher
         let qualityAsText = await winePage.$eval(".search-results-list > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2)", (element) => {
             return element.innerText
         })
+        .catch((error) => {
+            console.info(error)
+            return "0"
+        })
 
         let qualityAsNumber = parseFloat(qualityAsText.replace(/,/g, '.'))
 
