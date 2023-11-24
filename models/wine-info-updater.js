@@ -83,7 +83,7 @@ export default class WineUpdater
 
         quality = await qualityFetcher.getWineQualityFromPage()
             .catch((error) => {
-                quality = null
+                quality = 0
                 console.log(error)
             }
         )

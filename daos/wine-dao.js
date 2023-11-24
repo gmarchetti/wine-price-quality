@@ -58,8 +58,8 @@ export default class WineInfoDao
     async saveWine(wine)
     {
         const id = wine.getCtId()
-
-        if (!wine.getQuality())
+        const wineQuality = wine.getQuality()
+        if (!wineQuality || wineQuality == 0)
         {
             console.log("Searching for previously saved quality")
             const savedWine = await this.getWineById(wine.getCtId())

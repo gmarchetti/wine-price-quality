@@ -91,7 +91,7 @@ describe('WineDao', function () {
 
     it('Should not erase quality rating if it exists', async function(){
         let wine42 = new Wine("42", "test-wine", "0.99", "5.0")
-        let wine42b = new Wine("42", "test-wine", "0.99")
+        let wine42b = new Wine("42", "test-wine", "0.99", "0")
 
         await wineDao.saveWine(wine42)
         await wineDao.saveWine(wine42b)
@@ -99,7 +99,7 @@ describe('WineDao', function () {
         let wineFromDB = await wineDao.getWineById("42")
 
         console.log(wineFromDB)
-        assert.notEqual(wineFromDB.quality, null)    
+        assert.notEqual(wineFromDB.quality, "0")    
     })
 
     it('Price should change after update', async function(){
