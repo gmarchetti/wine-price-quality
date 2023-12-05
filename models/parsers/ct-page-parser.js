@@ -14,6 +14,10 @@ export default class CTWineParser
         let priceAsString = await rawWineInfo.$eval(".prices-wrapper > .sales > .value", (element) => {
             return element.getAttribute("content")
         })
+        .catch(error => {
+            console.error(error.message)
+            priceAsString = "0"
+        })
         return parseFloat(priceAsString)
     }
 
@@ -56,7 +60,7 @@ export default class CTWineParser
             wine.addImgHref(wineImgHref)
 
         } catch (error) {
-            console.error(error)
+            console.error(error.message)
         } finally {
             return wine
         }
