@@ -16,4 +16,5 @@ runtime: nodejs18
 
 env_variables:
   DB_CONNECTION_NAME: arcane-optics-212101:europe-west1:wine-info-db
+  DB_CLIENT_ID: crawler
 # [END app_yaml]

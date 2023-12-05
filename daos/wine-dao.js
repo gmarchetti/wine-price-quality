@@ -1,4 +1,5 @@
 import knex from 'knex'
+import {SecretManagerServiceClient} from "@google-cloud/secret-manager"
 
 const DB_TABLE_NAME = "basic-info"
 
@@ -11,37 +12,41 @@ export default class WineInfoDao
 {
     constructor(table)
     {   
-        let connectionInfo
+        this.connectionInfo = { database : "wine-info"}
 
         if (process.env.DB_CONNECTION_NAME)
         {
-            connectionInfo = {
-                database: "wine-info",
-                user: "guilherme",
-                password: "admin",
-                host: `/cloudsql/${process.env.DB_CONNECTION_NAME}`
-            }
+            this.connectionInfo.host =  `/cloudsql/${process.env.DB_CONNECTION_NAME}`
         } else {
-            connectionInfo = {
-                host: '127.0.0.1',
-                port: 5432,
-                database: "wine-info",
-                user: "guilherme",
-                password: "admin",
-            } 
-        }
-
-        this.client = knex({
-            client: "pg",
-            connection: connectionInfo
-        })
-            
+            this.connectionInfo.host = '127.0.0.1'
+            this.connectionInfo.port = 5432
+        } 
+          
         this.tableName = table || DB_TABLE_NAME
     }
 
     async openConnection()
     {
+        if(!this.client)
+        {
+            let clientName = process.env.DB_CLIENT_ID || "guilherme"
+            const secretClient = new SecretManagerServiceClient()
+    
+            const response = await secretClient.accessSecretVersion({name: `projects/625674505070/secrets/db-user-${clientName}/versions/1`,})
+                .catch(error => {
+                    console.error(error)
+                })
 
+            const clientPass = response[0]?.payload?.data?.toString("utf8")
+            
+            this.connectionInfo.user = clientName
+            this.connectionInfo.password = clientPass
+            
+            this.client = knex({
+                client: "pg",
+                connection: this.connectionInfo
+            })
+        }
     }
 
     async closeConnection()
