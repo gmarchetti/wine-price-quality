@@ -11,12 +11,12 @@ export default class CTWineParser
 
     async getPrice(rawWineInfo)
     {
-        let priceAsString = await rawWineInfo.$eval(".prices-wrapper > .sales > .value", (element) => {
+        let priceAsString = "0"
+        priceAsString = await rawWineInfo.$eval(".prices-wrapper > .sales > .value", (element) => {
             return element.getAttribute("content")
         })
         .catch(error => {
             console.error(error.message)
-            priceAsString = "0"
         })
         return parseFloat(priceAsString)
     }

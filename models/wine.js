@@ -22,8 +22,11 @@ export default class Wine
 
     updateVivinoId(id)
     {
-        this.wineInfo.vivinoId = id
-        this.wineInfo.vivinoHref = `https://www.vivino.com/wines/${id}`
+        if(id)
+        {
+            this.wineInfo.vivinoId = id
+            this.wineInfo.vivinoHref = `https://www.vivino.com/wines/${id}`
+        }
     }
 
     getVivinoId()

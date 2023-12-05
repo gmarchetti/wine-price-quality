@@ -81,12 +81,12 @@ export default class VivinoQualityFetcher
             throw new Error("Neither internal or external wine page provided")
         }
 
-        let ratingsText = await winePage.$eval(".search-results-list > div:nth-child(1) > .default-wine-card > .wine-card__content > .text-color-alt-gray > .average__container > .text-inline-block > .text-micro", (element) => {
+        let ratingsText = "0"
+        ratingsText = await winePage.$eval(".search-results-list > div:nth-child(1) > .default-wine-card > .wine-card__content > .text-color-alt-gray > .average__container > .text-inline-block > .text-micro", (element) => {
             return element.innerText
         })
         .catch( (error) => {
             console.error(error.message)
-            ratingsText = "0"
         })
 
         ratingsText = ratingsText?.split(" ")[0]
@@ -102,12 +102,12 @@ export default class VivinoQualityFetcher
             throw new Error("Neither internal or external wine page provided")
         }
 
-        let qualityAsText = await winePage.$eval(".search-results-list > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2)", (element) => {
+        let qualityAsText = "0.0"
+        qualityAsText = await winePage.$eval(".search-results-list > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2)", (element) => {
             return element.innerText
         })
         .catch((error) => {
             console.error(error.message)
-            qualityAsText = "0.0"
         })
 
         let qualityAsNumber = parseFloat(qualityAsText.replace(/,/g, '.'))
