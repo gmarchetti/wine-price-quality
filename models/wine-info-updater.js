@@ -53,8 +53,7 @@ export default class WineUpdater
         {
             if(wine != null)
             {
-                const quality = await this.getWineQuality(wine)
-                wine.updateQuality(quality)
+                await this.addVivinoInfo(wine)                
                 fullWineListing.push(wine)
 
                 responseChannel.write(`-- ${this.totalRequestedWines} -- ${this.totalWinesWithQuality} --\n`)
@@ -71,7 +70,7 @@ export default class WineUpdater
         return fullWineListing
     }
 
-    async getWineQuality(wine)
+    async addVivinoInfo(wine)
     {
         const qualityFetcher = new VivinoQualityFetcher()
         await qualityFetcher.searchForTheWine(wine)
@@ -80,6 +79,14 @@ export default class WineUpdater
             })
 
         const quality = await qualityFetcher.getWineQualityFromPage()
+        wine.updateQuality(quality)
+
+        const vivinoId = await qualityFetcher.getVivinoWineId()
+        wine.updateVivinoId(vivinoId)
+
+        const ratings = await qualityFetcher.getNumberOfRatings()
+        wine.updateRatings(ratings)
+
         qualityFetcher.closeWinePage()
         
         return quality

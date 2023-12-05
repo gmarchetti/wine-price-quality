@@ -27,6 +27,16 @@ describe('VivinoQualityFetcher', function () {
         assert.equal(quality, 3.7)
     });
 
+    it('Id should be 13938997', async function () {        
+      let id = await qualityFetcher.getVivinoWineId(winePage)
+      assert.equal(id, 13938997)
+    });
+
+    it('Number of ratings should be 4926', async function () {        
+      let ratings = await qualityFetcher.getNumberOfRatings(winePage)
+      assert.equal(ratings, 4926)
+    });
+
     afterEach(async function(){
         browser.closeSearchPage()
         winePage = null

@@ -20,6 +20,32 @@ export default class Wine
         return this.wineInfo.ctHref
     }
 
+    updateVivinoId(id)
+    {
+        this.wineInfo.vivinoId = id
+        this.wineInfo.vivinoHref = `https://www.vivino.com/wines/${id}`
+    }
+
+    getVivinoId()
+    {
+        return this.wineInfo.vivinoId
+    }
+
+    getVivinoHref()
+    {
+        this.wineInfo.vivinoHref
+    }
+
+    updateRatings(ratings)
+    {
+        this.wineInfo.ratings = ratings
+    }
+
+    getRatings()
+    {
+        return this.wineInfo.ratings
+    }
+
     addBrand(brand)
     {
         this.wineInfo.brand = brand

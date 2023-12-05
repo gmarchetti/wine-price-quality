@@ -57,6 +57,38 @@ export default class VivinoQualityFetcher
         this.browser = null
     }
 
+    async getVivinoWineId(externalPage)
+    {
+        let winePage = externalPage || this.page
+        if (winePage == null)
+        {
+            throw new Error("Neither internal or external wine page provided")
+        }
+
+        let vivinoWineId = await winePage.$eval(".search-results-list > div:nth-child(1) > .default-wine-card", (element) => {
+            return element.getAttribute("data-vintage")
+        })
+
+        return vivinoWineId
+    }
+
+    async getNumberOfRatings(externalPage)
+    {
+        let winePage = externalPage || this.page
+        if (winePage == null)
+        {
+            throw new Error("Neither internal or external wine page provided")
+        }
+
+        let ratingsText = await winePage.$eval(".search-results-list > div:nth-child(1) > .default-wine-card > .wine-card__content > .text-color-alt-gray > .average__container > .text-inline-block > .text-micro", (element) => {
+            return element.innerText
+        })
+
+        ratingsText = ratingsText.split(" ")[0]
+
+        return parseInt(ratingsText)
+    }
+
     async getWineQualityFromPage(externalPage)
     {
         let winePage = externalPage || this.page
@@ -64,6 +96,8 @@ export default class VivinoQualityFetcher
         {
             throw new Error("Neither internal or external wine page provided")
         }
+
+        
 
         let qualityAsText = await winePage.$eval(".search-results-list > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2)", (element) => {
             return element.innerText
