@@ -110,7 +110,7 @@ export default class VivinoQualityFetcher
             console.error(error.message)
         })
 
-        let qualityAsNumber = parseFloat(qualityAsText.replace(/,/g, '.'))
+        let qualityAsNumber = parseFloat(qualityAsText?.replace(/,/g, '.') || 0)
 
         return qualityAsNumber
     }
