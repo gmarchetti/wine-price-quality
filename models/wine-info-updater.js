@@ -75,21 +75,28 @@ export default class WineUpdater
         const qualityFetcher = new VivinoQualityFetcher()
         await qualityFetcher.searchForTheWine(wine)
             .catch((error) => {
-                console.log(error)
+                console.log(error.message)
             })
 
         const quality = await qualityFetcher.getWineQualityFromPage()
+            .catch((error) => {
+                console.log(error.message)
+            })
         wine.updateQuality(quality)
 
         const vivinoId = await qualityFetcher.getVivinoWineId()
+            .catch((error) => {
+                console.log(error.message)
+            })
         wine.updateVivinoId(vivinoId)
 
         const ratings = await qualityFetcher.getNumberOfRatings()
+            .catch((error) => {
+                console.log(error.message)
+            })
         wine.updateRatings(ratings)
 
         qualityFetcher.closeWinePage()
-        
-        return quality
     }
 
     async fetchAllSavedWineInfo()
