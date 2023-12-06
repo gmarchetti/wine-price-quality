@@ -28,7 +28,7 @@ export default class SearchBrowser
 
     async closeSearchPage()
     {
-        await this.page.close()
-        await this.browser.close()
+        await this.page?.close()
+        await this.browser?.close()
     }
 }
