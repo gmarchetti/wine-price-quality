@@ -12,7 +12,7 @@ export default class WineUpdater
         this.wineParser = new CTPageParser()        
     }
 
-    async getWinePriceListing(responseChannel, numPages)
+    async getWinePriceListing(numPages)
     {   
 
         const pageLimit = numPages || 0
@@ -26,15 +26,14 @@ export default class WineUpdater
         let updaterPromise = new Promise(async (resolve, reject) => {
             for (this.currentIndex = 0; this.currentIndex < pageLimit; this.currentIndex++)
             {
-                responseChannel.write(`---- Parsing page ${this.currentIndex} ----\n`)
-                responseChannel.write("-- Total requested wines -- Wines with Quality --\n")
+                console.info(`Parsing page ${this.currentIndex}\n`)
                 let page = await this.wineFetcher.getWineBulkListingPage(this.currentIndex)
                 let wines = await this.wineParser.getWinesFromListingPage(page)
-                await this.addQualityToPriceListing(wines, responseChannel)
+                await this.addQualityToPriceListing(wines)
             }        
             
             await this.wineFetcher.closeWinePage()
-            responseChannel.write("-- Finished Update Process --\n")
+            console.info("Finished Update Process")
             resolve()
         })
         
@@ -43,7 +42,7 @@ export default class WineUpdater
     }
 
     
-    async addQualityToPriceListing(wines, responseChannel){
+    async addQualityToPriceListing(wines){
         
         let fullWineListing = []
         let wineDao = new WineInfoDao()
@@ -55,9 +54,7 @@ export default class WineUpdater
             {
                 await this.addVivinoInfo(wine)                
                 fullWineListing.push(wine)
-
-                responseChannel.write(`-- ${this.totalRequestedWines} -- ${this.totalWinesWithQuality} --\n`)
-                responseChannel.write(wine.toJson() + "\n")
+                console.info(wine.toJson())
                 this.totalWinesWithQuality++
             }            
         };

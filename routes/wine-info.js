@@ -8,18 +8,12 @@ router.get("/update", (req, res) => {
 
     let wineUpdater = new WineInfoUpdater()
 
-    res.writeHead(200, {
-        'Content-Type': 'text/plain; charset=utf-8',
-        'Transfer-Encoding': 'chunked',
-        'X-Content-Type-Options': 'nosniff'
-      });
-
-    let priceListing = wineUpdater.getWinePriceListing(res, numPages)
-
-    priceListing
-        .then( prices => {
-            res.end()
-        }) 
+    const response = {
+        pages: numPages
+    }
+    
+    wineUpdater.getWinePriceListing(numPages)
+    res.status(200).json(response);
 })
 
 router.get("/", (req, res) => {        

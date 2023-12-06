@@ -70,7 +70,6 @@ export default class WineInfoDao
         const wineQuality = wine.getQuality()
         if (!wineQuality || wineQuality == 0)
         {
-            console.log("Searching for previously saved quality")
             const savedWine = await this.getWineById(wine.getCtId())
             wine.updateQuality(savedWine?.quality)
         }
