@@ -17,6 +17,10 @@
     },
     "scripts": {
         "start": "node index.js",
-        "test": "mocha 'tests/**/*.js' --recursive --timeout 60000 --exit"
+        "test": "mocha 'tests/**/*.js' --recursive --timeout 60000 --exit",
+        "gcp-build": "npx @puppeteer/browsers install chromium --path /workspace/puppeteer"
+    },
+    "puppeteer": {
+        "cacheDirectory": "/workspace/puppeteer"
     }
 }
