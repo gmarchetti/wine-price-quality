@@ -13,6 +13,7 @@
 
 # [START app_yaml]
 runtime: nodejs18
+instance_class: F4
 
 env_variables:
   DB_CONNECTION_NAME: arcane-optics-212101:europe-west1:wine-info-db

@@ -14,7 +14,7 @@ export default class SearchBrowser
             headless: "new",
             defaultViewport: { width: 1920, height: 1040 },
             devtools: false,
-            args: ['--start-maximized'],
+            args: ['--start-maximized', '--no-sandbox'],
         });
 
         this.page = await this.browser.newPage();
