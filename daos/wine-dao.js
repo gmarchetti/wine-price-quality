@@ -1,5 +1,6 @@
 import knex from 'knex'
 import {SecretManagerServiceClient} from "@google-cloud/secret-manager"
+import { KnownDevices } from 'puppeteer'
 
 const DB_TABLE_NAME = "basic-info"
 
@@ -44,14 +45,17 @@ export default class WineInfoDao
             
             this.client = knex({
                 client: "pg",
-                connection: this.connectionInfo
+                connection: this.connectionInfo,
+                pool: {min: 0}
             })
+        } else{
+            this.client = await knex.initialize()
         }
     }
 
     async closeConnection()
     {
-
+        await this.client.destroy()
     }
 
     async getTime()
