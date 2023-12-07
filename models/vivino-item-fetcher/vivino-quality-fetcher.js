@@ -34,16 +34,16 @@ export default class VivinoQualityFetcher
     {
         if (this.browser == null){
             this.browser = new SearchBrowser()
+            this.page = await this.browser.getSearchPage()
         }
         
         let wineToSearch = externalWine || this.wine
-        
-        this.page = await this.browser.getSearchPage()
-        
+
         const encodedUrl = encodeURI('https://www.vivino.com/search/wines?q=' + this.buildSearchName(wineToSearch))
         
         // Navigate the page to a URL
-        await this.page.goto(encodedUrl);
+        let status = await this.page.goto(encodedUrl);
+        console.log("=== searchForTheWine Status Code: " + status.status())
         // await this.page.screenshot({ path: './screenshot.jpg' })
 
         return this.page
@@ -51,8 +51,9 @@ export default class VivinoQualityFetcher
 
     async closeWinePage()
     {
-        this.browser.closeSearchPage()
+        await this.browser.closeSearchPage()
         this.browser = null
+        this.page = null
     }
 
     async getVivinoWineId(externalPage)
@@ -81,15 +82,15 @@ export default class VivinoQualityFetcher
             throw new Error("Neither internal or external wine page provided")
         }
 
-        let ratingsText = "0"
-        ratingsText = await winePage.$eval(".search-results-list > div:nth-child(1) > .default-wine-card > .wine-card__content > .text-color-alt-gray > .average__container > .text-inline-block > .text-micro", (element) => {
+        const ratingsFromPage = await winePage.$eval(".search-results-list > div:nth-child(1) > .default-wine-card > .wine-card__content > .text-color-alt-gray > .average__container > .text-inline-block > .text-micro", (element) => {
             return element.innerText
         })
         .catch( (error) => {
             console.error(error.message)
         })
 
-        ratingsText = ratingsText?.split(" ")[0]
+        let ratingsText = ratingsFromPage || "0"
+        ratingsText = ratingsText.split(" ")[0]
 
         return parseInt(ratingsText)
     }
@@ -102,15 +103,15 @@ export default class VivinoQualityFetcher
             throw new Error("Neither internal or external wine page provided")
         }
 
-        let qualityAsText = "0.0"
-        qualityAsText = await winePage.$eval(".search-results-list > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2)", (element) => {
+        const qualityFromPage = await winePage.$eval(".search-results-list > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2)", (element) => {
             return element.innerText
         })
         .catch((error) => {
             console.error(error.message)
         })
 
-        let qualityAsNumber = parseFloat(qualityAsText?.replace(/,/g, '.') || 0)
+        const qualityAsText = qualityFromPage || "0.0"
+        const qualityAsNumber = parseFloat(qualityAsText.replace(/,/g, '.'))
 
         return qualityAsNumber
     }

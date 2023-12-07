@@ -9,7 +9,8 @@ export default class WineUpdater
     constructor()
     {
         this.wineFetcher = new CTWineFetcher()
-        this.wineParser = new CTPageParser()        
+        this.wineParser = new CTPageParser()
+        this.qualityFetcher = new VivinoQualityFetcher()        
     }
 
     async getWinePriceListing(numPages)
@@ -33,6 +34,7 @@ export default class WineUpdater
             }        
             
             await this.wineFetcher.closeWinePage()
+            await this.qualityFetcher.closeWinePage()
             console.info("Finished Update Process")
             resolve()
         })
@@ -52,7 +54,10 @@ export default class WineUpdater
         {
             if(wine != null)
             {
-                await this.addVivinoInfo(wine)                
+                await this.addVivinoInfo(wine)
+                    .catch(error => {
+                        console.error("== addVivinoInfoError: " + error.message)
+                    })                
                 fullWineListing.push(wine)
                 console.info(wine.toJson())
                 this.totalWinesWithQuality++
@@ -69,31 +74,20 @@ export default class WineUpdater
 
     async addVivinoInfo(wine)
     {
-        const qualityFetcher = new VivinoQualityFetcher()
-        await qualityFetcher.searchForTheWine(wine)
-            .catch((error) => {
-                console.log(error.message)
-            })
+        try{
+            await this.qualityFetcher.searchForTheWine(wine)
 
-        const quality = await qualityFetcher.getWineQualityFromPage()
-            .catch((error) => {
-                console.log(error.message)
-            })
-        wine.updateQuality(quality)
+            const quality = await this.qualityFetcher.getWineQualityFromPage()
+            wine.updateQuality(quality)
 
-        const vivinoId = await qualityFetcher.getVivinoWineId()
-            .catch((error) => {
-                console.log(error.message)
-            })
-        wine.updateVivinoId(vivinoId)
+            const vivinoId = await this.qualityFetcher.getVivinoWineId()
+            wine.updateVivinoId(vivinoId)
 
-        const ratings = await qualityFetcher.getNumberOfRatings()
-            .catch((error) => {
-                console.log(error.message)
-            })
-        wine.updateRatings(ratings)
-
-        qualityFetcher.closeWinePage()
+            const ratings = await this.qualityFetcher.getNumberOfRatings()
+            wine.updateRatings(ratings)
+        } catch(error){
+            console.log("== searchForTheWineError: " + error.message)
+        }
     }
 
     async fetchAllSavedWineInfo()
