@@ -1,12 +1,18 @@
 import puppeteer from 'puppeteer';
 import SearchBrowser from '../puppeteer/search-browser.js';
 
+function delay(time) {
+    return new Promise(resolve => setTimeout(resolve, time));
+}
+
 export default class VivinoQualityFetcher
 {
     constructor(wine)
     {
         this.wine = wine
     }
+
+    
 
     buildSearchName(wine)
     {
@@ -43,8 +49,12 @@ export default class VivinoQualityFetcher
         
         // Navigate the page to a URL
         let status = await this.page.goto(encodedUrl);
-        console.log("=== searchForTheWine Status Code: " + status.status())
-        // await this.page.screenshot({ path: './screenshot.jpg' })
+        if(status.status() == 429)
+        {
+            console.log("== Received 429 response, waiting sleeping for sometime")
+            await delay(30000)
+            console.log("== Resuming")
+        }
 
         return this.page
     }
