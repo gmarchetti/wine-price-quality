@@ -77,14 +77,15 @@ export default class WineUpdater
     {
         try{
             await this.qualityFetcher.searchForTheWine(wine)
+            const vivinoWineCard = await this.qualityFetcher.findCorrectWineCard()
 
-            const quality = await this.qualityFetcher.getWineQualityFromPage()
+            const quality = await this.qualityFetcher.getWineQualityFromCard(vivinoWineCard)
             wine.updateQuality(quality)
 
-            const vivinoId = await this.qualityFetcher.getVivinoWineId()
+            const vivinoId = await this.qualityFetcher.getVivinoWineIdFromCard(vivinoWineCard)
             wine.updateVivinoId(vivinoId)
 
-            const ratings = await this.qualityFetcher.getNumberOfRatings()
+            const ratings = await this.qualityFetcher.getNumberOfRatingsFromCard(vivinoWineCard)
             wine.updateRatings(ratings)
         } catch(error){
             console.log("== searchForTheWineError: " + error.message)

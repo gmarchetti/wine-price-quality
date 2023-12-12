@@ -78,15 +78,9 @@ export default class VivinoQualityFetcher
         this.page = null
     }
 
-    async getVivinoWineId(externalPage)
+    async getVivinoWineIdFromCard(element)
     {
-        let winePage = externalPage || this.page
-        if (winePage == null)
-        {
-            throw new Error("Neither internal or external wine page provided")
-        }
-
-        let vivinoWineId = await winePage.$eval(".search-results-list > div:nth-child(1) > .default-wine-card", (element) => {
+        let vivinoWineId = await element?.$eval(".default-wine-card", (element) => {
             return element.getAttribute("data-vintage")
         })
         .catch( (error) => {
@@ -96,7 +90,7 @@ export default class VivinoQualityFetcher
         return vivinoWineId
     }
 
-    async getNumberOfRatings(externalPage)
+    async getVivinoWineId(externalPage)
     {
         let winePage = externalPage || this.page
         if (winePage == null)
@@ -104,7 +98,13 @@ export default class VivinoQualityFetcher
             throw new Error("Neither internal or external wine page provided")
         }
 
-        const ratingsFromPage = await winePage.$eval(".search-results-list > div:nth-child(1) > .default-wine-card > .wine-card__content > .text-color-alt-gray > .average__container > .text-inline-block > .text-micro", (element) => {
+        const element = await this.findCorrectWineCard(winePage)
+        return await this.getVivinoWineIdFromCard(element)
+    }
+
+    async getNumberOfRatingsFromCard(element)
+    {
+        const ratingsFromPage = await element?.$eval(".default-wine-card > .wine-card__content > .text-color-alt-gray > .average__container > .text-inline-block > .text-micro", (element) => {
             return element.innerText
         })
         .catch( (error) => {
@@ -117,20 +117,31 @@ export default class VivinoQualityFetcher
         return parseInt(ratingsText)
     }
 
+    async getNumberOfRatings(externalPage)
+    {
+        let winePage = externalPage || this.page
+
+        if (winePage == null)
+        {
+            throw new Error("Neither internal or external wine page provided")
+        }
+
+        const element = await this.findCorrectWineCard(winePage)
+        return await this.getNumberOfRatingsFromCard(element)
+    }
+
     async getElementFromSearchResult(page, index)
     {
         const searchItem = await page.$(`.search-results-list > div:nth-child(${index})`)
         return searchItem
     }
 
-    async getWineName(page, wineIndex)
+    async getWineName(searchElement)
     {
-        let index = wineIndex || 1
-        if (page == null)
+        if (searchElement == null)
         {
             throw new Error("== getWineName: No wine element provided")
         }
-        const searchElement = await this.getElementFromSearchResult(page, index)
         
         const wineName = await searchElement.$eval(".default-wine-card > div:nth-child(2) > div:nth-child(1) > span:nth-child(1) > a:nth-child(1)", (element) => {
             return element.innerText
@@ -157,15 +168,14 @@ export default class VivinoQualityFetcher
                 namesMatch = false
             }
         }
-        
+
         return namesMatch
     }
-
-    async getWineQualityFromPage(externalPage)
+    
+    async findCorrectWineCard(externalPage)
     {
-        let wineCardElement
-        let qualityFromPage
         let wineName
+        let wineCardElement
         let winePage = externalPage || this.page
         let matchFound = false
 
@@ -178,24 +188,43 @@ export default class VivinoQualityFetcher
 
         for (let i = 1; i <= numResultChildren && !matchFound; i++)
         {
-            wineName = await this.getWineName(winePage, i)
             
-            if(this.validateResultWineName(this.wine, wineName))
-            {
-                matchFound = true
-                wineCardElement = await this.getElementFromSearchResult(winePage, i)
-                qualityFromPage = await wineCardElement.$eval("div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2)", (element) => {
-                    return element.innerText
-                })
-                .catch((error) => {
-                    console.error(error.message)
-                })
-            }
+            wineCardElement = await this.getElementFromSearchResult(winePage, i)
+            wineName = await this.getWineName(wineCardElement)
+            matchFound = this.validateResultWineName(this.wine, wineName)
         }
+
+        if (matchFound)
+            return wineCardElement
+        else
+            return undefined
+    }
+
+    async getWineQualityFromCard(wineCardElement)
+    {
+        let qualityFromPage = await wineCardElement?.$eval("div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2)", (element) => {
+            return element.innerText
+        })
+        .catch((error) => {
+            console.error(error.message)
+        })
 
         const qualityAsText = qualityFromPage || "0.0"
         const qualityAsNumber = parseFloat(qualityAsText.replace(/,/g, '.'))
 
         return qualityAsNumber
+    }
+
+    async getWineQualityFromPage(externalPage)
+    {
+        let winePage = externalPage || this.page
+
+        if (winePage == null)
+        {
+            throw new Error("Neither internal or external wine page provided")
+        }
+
+        const element = await this.findCorrectWineCard(winePage)
+        return await this.getWineQualityFromCard(element)
     }
 }
