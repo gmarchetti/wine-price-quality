@@ -5,8 +5,9 @@ const router = express.Router()
 
 router.get("/update", (req, res) => {
     let numPages = req.query.pages
+    let allowQualityOverwrite = req.query.overwrite || false
 
-    let wineUpdater = new WineInfoUpdater()
+    let wineUpdater = new WineInfoUpdater(allowQualityOverwrite)
 
     const response = {
         pages: numPages

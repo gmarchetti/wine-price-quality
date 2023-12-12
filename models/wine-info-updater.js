@@ -6,11 +6,12 @@ import Wine from "./wine.js"
 
 export default class WineUpdater
 {
-    constructor()
+    constructor(allowOverwrite)
     {
         this.wineFetcher = new CTWineFetcher()
         this.wineParser = new CTPageParser()
         this.qualityFetcher = new VivinoQualityFetcher()        
+        this.allowOverwrite = allowOverwrite
     }
 
     async getWinePriceListing(numPages)
@@ -66,7 +67,7 @@ export default class WineUpdater
 
         this.totalRequestedWines += fullWineListing.length
         
-        await wineDao.saveAllWines(fullWineListing)
+        await wineDao.saveAllWines(fullWineListing, this.allowOverwrite)
         await wineDao.closeConnection()
 
         return fullWineListing

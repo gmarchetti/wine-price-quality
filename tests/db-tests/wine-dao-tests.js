@@ -102,6 +102,19 @@ describe('WineDao', function () {
         assert.notEqual(wineFromDB.quality, "0")    
     })
 
+    it('Should erase quality rating if it exists with overwrite flag', async function(){
+        let wine42 = new Wine("42", "test-wine", "0.99", "5.0")
+        let wine42b = new Wine("42", "test-wine", "0.99", "0")
+
+        await wineDao.saveWine(wine42)
+        await wineDao.saveWine(wine42b, true)
+        
+        let wineFromDB = await wineDao.getWineById("42")
+
+        console.log(wineFromDB)
+        assert.equal(wineFromDB.quality, "0")    
+    })
+
     it('Price should change after update', async function(){
         let wine42 = new Wine("42", "test-wine", "1.99")
         await wineDao.saveWine(wine42)

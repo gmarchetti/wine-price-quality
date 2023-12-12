@@ -64,11 +64,11 @@ export default class WineInfoDao
         return result.rows[0].now
     }
 
-    async saveWine(wine)
+    async saveWine(wine, allowOverride)
     {
         const id = wine.getCtId()
         const wineQuality = wine.getQuality()
-        if (!wineQuality || wineQuality == 0)
+        if (!allowOverride && (!wineQuality || wineQuality == 0))
         {
             const savedWine = await this.getWineById(wine.getCtId())
             wine.updateQuality(savedWine?.quality)
@@ -110,9 +110,9 @@ export default class WineInfoDao
 
         return orderedRows
     }
-    async saveAllWines(wineList)
+    async saveAllWines(wineList, allowOverride)
     {
         for(const wine of wineList)
-            await this.saveWine(wine)
+            await this.saveWine(wine, allowOverride)
     }
 }
