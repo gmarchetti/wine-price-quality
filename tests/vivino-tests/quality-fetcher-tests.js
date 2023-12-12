@@ -125,7 +125,7 @@ describe('VivinoQualityFetcher', function () {
       assert.equal(quality, 3.6)
     });
 
-    it("Vallegre DOC Douro Vinho Tinto Quality should be 0.0", async function() {
+    it("Vallegre DOC Douro Vinho Tinto Quality should be 3.4", async function() {
       const wine = new Wine('', 'Vallegre DOC Douro Vinho Tinto', "5.99")
       wine.addBrand("Vallegre")
       wine.addType("Vinho Tinto")
@@ -133,7 +133,7 @@ describe('VivinoQualityFetcher', function () {
       const winePage = await qualityFetcher.searchForTheWine(wine)
       const quality = await qualityFetcher.getWineQualityFromPage(winePage)
 
-      assert.equal(quality, 0)
+      assert.equal(quality, 3.4)
     });
 
     it("Adega do Cercal Vinho Tinto Quality should be 0.0", async function() {
@@ -145,6 +145,17 @@ describe('VivinoQualityFetcher', function () {
       const quality = await qualityFetcher.getWineQualityFromPage(winePage)
 
       assert.equal(quality, 0)
+    });
+
+    it("Guarda Rios Regional Alentejano Vinho Tinto Quality should be 3.8", async function() {
+      const wine = new Wine('', 'Guarda Rios Regional Alentejano Vinho Tinto', "3.99")
+      wine.addBrand("Guarda Rios")
+      wine.addType("Vinho Tinto")
+
+      const winePage = await qualityFetcher.searchForTheWine(wine)
+      const quality = await qualityFetcher.getWineQualityFromPage(winePage)
+
+      assert.equal(quality, 3.8)
     });
   })
 

@@ -123,13 +123,14 @@ export default class VivinoQualityFetcher
         return searchItem
     }
 
-    async getWineName(page)
+    async getWineName(page, wineIndex)
     {
+        let index = wineIndex || 1
         if (page == null)
         {
             throw new Error("== getWineName: No wine element provided")
         }
-        const searchElement = await this.getElementFromSearchResult(page, 1)
+        const searchElement = await this.getElementFromSearchResult(page, index)
         
         const wineName = await searchElement.$eval(".default-wine-card > div:nth-child(2) > div:nth-child(1) > span:nth-child(1) > a:nth-child(1)", (element) => {
             return element.innerText
@@ -162,23 +163,35 @@ export default class VivinoQualityFetcher
 
     async getWineQualityFromPage(externalPage)
     {
+        let wineCardElement
+        let qualityFromPage
+        let wineName
         let winePage = externalPage || this.page
+        let matchFound = false
+
         if (winePage == null)
         {
             throw new Error("Neither internal or external wine page provided")
         }
         
-        const wineName = await this.getWineName(winePage)
+        const numResultChildren = (await winePage.$$(".card")).length
 
-        if(!this.validateResultWineName(this.wine, wineName))
-            return 0
-
-        const qualityFromPage = await winePage.$eval(".search-results-list > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2)", (element) => {
-            return element.innerText
-        })
-        .catch((error) => {
-            console.error(error.message)
-        })
+        for (let i = 1; i <= numResultChildren && !matchFound; i++)
+        {
+            wineName = await this.getWineName(winePage, i)
+            
+            if(this.validateResultWineName(this.wine, wineName))
+            {
+                matchFound = true
+                wineCardElement = await this.getElementFromSearchResult(winePage, i)
+                qualityFromPage = await wineCardElement.$eval("div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2)", (element) => {
+                    return element.innerText
+                })
+                .catch((error) => {
+                    console.error(error.message)
+                })
+            }
+        }
 
         const qualityAsText = qualityFromPage || "0.0"
         const qualityAsNumber = parseFloat(qualityAsText.replace(/,/g, '.'))
