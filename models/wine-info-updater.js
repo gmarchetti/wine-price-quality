@@ -30,11 +30,11 @@ export default class WineUpdater
                 console.info(`Parsing page ${this.currentIndex}\n`)
                 let page = await this.wineFetcher.getWineBulkListingPage(this.currentIndex)
                 let wines = await this.wineParser.getWinesFromListingPage(page)
+                await this.wineFetcher.closeWinePage()
                 await this.addQualityToPriceListing(wines)
+                await this.qualityFetcher.closeWinePage()
             }        
             
-            await this.wineFetcher.closeWinePage()
-            await this.qualityFetcher.closeWinePage()
             console.info("Finished Update Process")
             resolve()
         })
